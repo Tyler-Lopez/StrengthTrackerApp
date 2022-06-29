@@ -37,7 +37,7 @@ fun ExpandableExerciseCard(
     var bruh: Long = 0
     //for tracking how many sets have been logged, just increments in a lambda
     var setsSoFar by remember { mutableStateOf(bruh) }
-
+    val date = LocalDate.now()
     //card title
     val title = movement.name
 
@@ -149,7 +149,7 @@ fun ExpandableExerciseCard(
                         movement = movement,
                         date = date,
                         setsSoFar = setsSoFar
-                    ) { setsSoFar = it }
+                    )
                     //StaticsTextFields(movement = movement)
                 } else if (movement is Dynamics) {
                     //  DynamicsTextFields(movement = movement)

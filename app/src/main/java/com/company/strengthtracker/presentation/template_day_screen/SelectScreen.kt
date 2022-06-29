@@ -1,5 +1,7 @@
 package com.company.strengthtracker.presentation.template_day_screen
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,35 +20,40 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.AllExercises
-import com.company.strengthtracker.data.entities.exercise_data.main_categories.Statics
-import java.time.LocalDate
 
-//please merge
+
+
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable 
+@Composable
 fun GenericAddPopUp(
     movement: AllExercises,
     viewModel: DayViewModel = hiltViewModel(),
     content: @Composable() () -> Unit
 ) {
+    //controller boolean for state of pop up
     var openDialog by remember { mutableStateOf(true) }
 
-    var textContentTime by remember { mutableStateOf("") }
+
+    //display dialog
 
     if (openDialog) {
         Dialog(
+            //dismissing open dialog
             onDismissRequest = { openDialog = false },
+
+            //idk
             properties = DialogProperties(),
 
             ) {
+            //Card container
             Card(
                 modifier = Modifier
-                    .size(300.dp, 370.dp)
+                    .size(300.dp, 340.dp)
                     .background(MaterialTheme.colorScheme.surfaceVariant),
                 shape = RoundedCornerShape(10.dp)
 //
@@ -55,18 +62,59 @@ fun GenericAddPopUp(
                     verticalArrangement = Arrangement.SpaceEvenly,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    content()
+                    Column() {
+
+                        for (property in movement.properties) {
+                            Row(
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                TextField(
+                                    modifier = Modifier.padding(
+                                        start = 8.dp,
+                                        end = 8.dp,
+                                        top = 0.dp,
+                                        bottom = 0.dp
+                                    ),
+                                    value = property.key, onValueChange = {}, readOnly = true,
+                                    colors = TextFieldDefaults.textFieldColors(
+                                        textColor = MaterialTheme.colorScheme.onSurface,
+
+                                        focusedIndicatorColor = Color.Transparent,
+
+                                        unfocusedIndicatorColor = Color.Transparent,
+                                        disabledIndicatorColor = Color.Transparent,
+                                        disabledLabelColor = Color.Transparent,
+                                    ),
+                                    trailingIcon = {
+                                        var checked by remember { mutableStateOf(false) }
+                                        Checkbox(
+                                            checked = checked,
+                                            onCheckedChange = { checked = !checked
+                                            property.setValue(checked)
+                                            })
+
+                                    }
+                                )
+
+                            }
+                        }
+                    }
+
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End,
                         verticalAlignment = Alignment.Bottom
                     ) {
 
-                        //add set
+
                         Button(
 
                             onClick = {
                                 //add action here
+                                viewModel.exerciseBundleMain.add(mutableListOf(movement))
                                 openDialog = false
                             },
                             elevation = ButtonDefaults.buttonElevation(0.dp),

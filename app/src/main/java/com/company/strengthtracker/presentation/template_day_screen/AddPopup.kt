@@ -34,14 +34,15 @@ import java.time.LocalDate
 @Composable
 fun StaticsAddSetPopUp(
     movement: Statics,
-    date: LocalDate,
     viewModel: DayViewModel = hiltViewModel(),
-    setsSoFar: Long,
-    updateSetNumber: (Long) -> Unit
+    date: LocalDate,
+    setsSoFar: Long
+
+
 ) {
     var openDialog by remember { mutableStateOf(true) }
 
-    var textContentTime by remember { mutableStateOf("") }
+
 
     if (openDialog) {
         Dialog(
@@ -60,37 +61,63 @@ fun StaticsAddSetPopUp(
                     verticalArrangement = Arrangement.SpaceEvenly,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    DropDownTextField(
-                        label = "Progression",
-                        movement = movement
-                    ) {
+                    if(movement.properties.getValue("Progression"))
+                    {
+                        DropDownTextField(
+                            label = "Progression",
+                            movement = movement
+                        ) {
 
-                        movement.progression = it
-                    }
-                    TimeIncrementTextField(
-                        label = "Time",
-                        movement = movement,
-                        trailingLabel = "sec.",
-                        onDataChanged = {
-                            movement.holdTime = it
+                            movement.progression = it
                         }
-                    )
-                    WeightIncrementTextField(
-                        movement = movement,
-                        label = "Assistance",
-                        trailingLabel = "kg."
-                    ) {
-
-                        movement.weight = it
                     }
-                    TimeIncrementTextField(
-                        movement = movement,
-                        label = "SiR",
-                        trailingLabel = "sec"
-                    ) {
-
-                        movement.sir = it
+                    if(movement.properties.getValue("Hold time"))
+                    {
+                        TimeIncrementTextField(
+                            label = "Time",
+                            movement = movement,
+                            trailingLabel = "sec.",
+                            onDataChanged = {
+                                movement.holdTime = it
+                            }
+                        )
                     }
+                    if(movement.properties.getValue("Weight"))
+                    {
+                        WeightIncrementTextField(
+                            movement = movement,
+                            label = "Assistance",
+                            trailingLabel = "kg."
+                        ) {
+
+                            movement.weight = it
+                        }
+                    }
+                    if(movement.properties.getValue("Seconds in reserve"))
+                    {
+                        TimeIncrementTextField(
+                            movement = movement,
+                            label = "SiR",
+                            trailingLabel = "sec"
+                        ) {
+
+                            movement.sir = it
+                        }
+                    }
+                    if(movement.properties.getValue("Reps"))
+                    {
+                        //TODO implement reps text field
+                        TimeIncrementTextField(
+                            label = "Reps",
+                            movement = movement,
+                            trailingLabel = "reps",
+                            onDataChanged = {
+                                movement.reps = it
+                            }
+                        )
+                    }
+
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End,
@@ -103,8 +130,8 @@ fun StaticsAddSetPopUp(
                             onClick = {
 
                                 /*PASS DATA TO VIEWMODEL, IMMEDIATELY MAKE NEW DOCUMENT*/
-                                viewModel.addNewSet(
-                                    movement
+                                viewModel.addSetHelp(
+                                    movement = movement
                                 )
                                 openDialog = false
 

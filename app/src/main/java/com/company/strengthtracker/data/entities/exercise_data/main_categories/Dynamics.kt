@@ -9,11 +9,15 @@ open class Dynamics(
     setNumber:Long = -1,
     override val exType:ExState = DYNAMIC,
     override val iconId:Int = -1,
+
+    override val properties: MutableMap<String, Boolean> = mutableMapOf(
+
+    )
 ):AllExercises(name=name, weight = weight, setNumber = setNumber) {
 
     override var name = name
     override var weight = weight
-    open var reps = reps
+    override var reps = reps
     open var rir = rir
     override var setNumber = setNumber
 }

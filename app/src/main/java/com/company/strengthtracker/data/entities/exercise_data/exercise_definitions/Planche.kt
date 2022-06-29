@@ -23,7 +23,7 @@ class Planche(
     progression: String = "",
     //IDK
     setNumber: Long = -1,
-    displayFields:List<Boolean>,
+   // displayFields:List<Boolean>,
     override val exType: ExState = ExState.STATIC,
     override val iconId: Int = R.drawable.ic_action_name
 //hello
@@ -34,5 +34,6 @@ class Planche(
     progression = progression,
     sir = sir,
     setNumber = setNumber,
-    iconId = iconId
+    iconId = iconId,
+    reps = reps
 )
