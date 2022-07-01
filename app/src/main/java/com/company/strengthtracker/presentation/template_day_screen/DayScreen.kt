@@ -80,6 +80,7 @@ fun DayScreen(
             }
             LOADING -> {
 
+
             }
             ERROR -> {
                 Text("Error")
@@ -104,7 +105,7 @@ fun DayScreen(
                 BottomBar(viewModel = viewModel, date = date, colors = colors)
             }
             LOADED -> {
-               // TopBar(viewModel = viewModel, date = date, colors)
+                // TopBar(viewModel = viewModel, date = date, colors)
 
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -114,17 +115,22 @@ fun DayScreen(
 
                     exerciseBundle.forEachIndexed { index, element ->
 
-                            ExpandableExerciseCard(
-                                movement = element.get(0),
-                                date = date.value,
-                                exercises = exerciseBundle.get(index)
-                            )
+                        ExpandableExerciseCard(
+                            movement = element.get(0),
+                            date = date.value,
+                            exercises = exerciseBundle.get(index)
+                        )
 
                     }
 
 
                 }
-                Column(modifier = Modifier.background(Color.Transparent).fillMaxSize(), verticalArrangement = Arrangement.Bottom){
+                Column(
+                    modifier = Modifier
+                        .background(Color.Transparent)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Bottom
+                ) {
                     BottomBar(viewModel = viewModel, date = date, colors = colors)
                 }
 
@@ -147,19 +153,23 @@ fun BottomBar(
     colors: ColorScheme,
 ) {
 
-        Row(
-            modifier = Modifier.fillMaxWidth(0.95f),
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.CenterVertically
+    Row(
+        modifier = Modifier.fillMaxWidth(0.95f),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        FloatingActionButton(
+            onClick = { viewModel.openSelection() },
+            containerColor = colors.primaryContainer,
+            contentColor = colors.onPrimaryContainer
         ) {
-            FloatingActionButton(onClick = { viewModel.openSelection() }, containerColor = colors.primaryContainer, contentColor = colors.onPrimaryContainer) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "selectionview",
-                    tint = colors.primary
-                )
-            }
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "selectionview",
+                tint = colors.primary
+            )
         }
+    }
 
 }
 
@@ -168,7 +178,7 @@ fun BottomBar(
 fun TopBar(
     viewModel: DayViewModel,
     date: MutableState<LocalDate>,
-    colors:ColorScheme
+    colors: ColorScheme
 ) {
     var exState by remember { mutableStateOf(false) }
     val formatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
@@ -184,7 +194,8 @@ fun TopBar(
     //Holder for top bar buttons and stuff
     Row(
         modifier = Modifier
-            .padding(10.dp).fillMaxWidth(),
+            .padding(10.dp)
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -203,14 +214,14 @@ fun TopBar(
                 tint = colors.primary
             )
         }
-        Row(modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End,
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(formatter.format(date.value), color = colors.primary, modifier = Modifier)
         }
-        }
-
+    }
 }
 
 

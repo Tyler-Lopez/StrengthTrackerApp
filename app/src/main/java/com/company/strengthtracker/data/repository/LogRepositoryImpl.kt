@@ -1,36 +1,23 @@
 package com.company.strengthtracker.data.repository
 
-import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.AllExercises
-import com.company.strengthtracker.data.entities.exercise_data.main_categories.Dynamics
-import com.company.strengthtracker.data.entities.exercise_data.main_categories.Statics
 import com.company.strengthtracker.di.AppModule
-import com.company.strengthtracker.domain.repository.AuthRepository
-import com.company.strengthtracker.domain.repository.SetRepository
+import com.company.strengthtracker.domain.repository.LogRepository
 import com.company.strengthtracker.domain.util.Resource
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
-import java.nio.file.Path
 import java.time.LocalDate
 import javax.inject.Inject
 
 //
-class SetRepositoryImpl @Inject constructor(
-    private val db: FirebaseFirestore
-) : SetRepository {
+class LogRepositoryImpl @Inject constructor(
+    private val db: FirebaseFirestore,
+) : LogRepository {
 
     override suspend fun getAllExerciseSubcollection(
         date: String,
@@ -52,6 +39,7 @@ class SetRepositoryImpl @Inject constructor(
         }
     }
 
+
     override suspend fun getSetSubcollection(
         date: String,
         userUid: String,
@@ -70,14 +58,35 @@ class SetRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getHistory(
+        dateStart: LocalDate,
+        dateEnd: LocalDate,
+        userUid:String
+    ): Resource<QuerySnapshot> {
+        return try {
+
+            val query =  db.collection(userUid).whereGreaterThan("date", dateStart).whereLessThan("date", dateEnd).get().await()
+            if(!query.isEmpty){
+
+                Resource.Success(query)
+            } else (Resource.Error("range fetch was empty"))
+        } catch (e:Exception) {
+           Resource.Error("Exception while fetching range")
+        }
+    }
+
     override suspend fun createLogPath(
         fields: HashMap<String, String>,
+        dateIndex: HashMap<String,LocalDate>,
         userUid: String,
         date: String,
         name: String,
+
         exType: String
     ): Resource<String> {
         return try {
+
+            db.collection(userUid).document(date).set(dateIndex).await()
             db.collection(userUid).document(date).collection(date).document(name).set(fields)
                 .await()
             Resource.Success("path created")
@@ -91,6 +100,7 @@ class SetRepositoryImpl @Inject constructor(
         date: String,
         userUid: String
     ): Resource<String> {
+
         return try{
             val newDoc = db.collection(userUid).document(date).collection(date).document(movement.name).collection(movement.name).add(movement).await()
             if(newDoc != null){

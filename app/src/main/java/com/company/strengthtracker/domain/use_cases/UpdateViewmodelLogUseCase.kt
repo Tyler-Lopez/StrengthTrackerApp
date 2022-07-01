@@ -1,28 +1,16 @@
+
 package com.company.strengthtracker.domain.use_cases
 
-import android.content.ContentValues
-import android.content.ContentValues.TAG
-import android.util.Log
-import androidx.lifecycle.viewModelScope
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.AllExercises
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.Dynamics
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.Statics
-import com.company.strengthtracker.data.repository.SetRepositoryImpl
-import com.company.strengthtracker.data.repository.UsersRepositoryImpl
-import com.company.strengthtracker.domain.repository.SetRepository
+import com.company.strengthtracker.domain.repository.LogRepository
 import com.company.strengthtracker.domain.util.Resource
-import com.company.strengthtracker.presentation.template_day_screen.DayViewModel
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class UpdateViewmodelLogUseCase @Inject constructor(
-    private val setRepositoryImpl: SetRepository
+    private val setRepositoryImpl: LogRepository
 ) {
     suspend fun updateViewLog(
         date:String,
