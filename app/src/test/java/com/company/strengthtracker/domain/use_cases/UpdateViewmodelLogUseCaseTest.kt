@@ -3,6 +3,7 @@ package com.company.strengthtracker.domain.use_cases
 import com.company.strengthtracker.data.entities.exercise_data.exercise_definitions.FrontLever
 import com.company.strengthtracker.data.entities.exercise_data.exercise_definitions.Planche
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.AllExercises
+import com.company.strengthtracker.data.repository.SetRepositoryImpl
 import com.company.strengthtracker.domain.use_cases.data.repository.FakeLogRepository
 import com.company.strengthtracker.domain.util.Resource
 import com.google.common.truth.Truth.assertThat
