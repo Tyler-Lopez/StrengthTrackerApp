@@ -2,9 +2,12 @@ package com.company.strengthtracker.presentation.template_day_screen
 
 import android.annotation.SuppressLint
 import android.content.res.Resources
+
+import android.content.ContentValues.TAG
 import android.os.Build
 import android.view.FrameMetrics.ANIMATION_DURATION
 import android.widget.Space
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -13,6 +16,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,8 +27,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+<<<<<<< HEAD
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Menu
+=======
+import androidx.compose.material.icons.sharp.CalendarViewWeek
+import androidx.compose.material3.*
+>>>>>>> 0046a668960accbbda65a9eb19e4208a4729305e
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,6 +56,7 @@ import androidx.navigation.NavController
 import com.company.strengthtracker.R
 import com.company.strengthtracker.data.entities.exercise_data.exercise_definitions.*
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.AllExercises
+<<<<<<< HEAD
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.Dynamics
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.Statics
 import com.company.strengthtracker.ui.theme.*
@@ -64,6 +74,14 @@ import kotlin.math.roundToInt
 import com.himanshoe.kalendar.ui.Kalendar
 import com.himanshoe.kalendar.ui.KalendarType
 import kotlinx.coroutines.delay
+=======
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import com.company.strengthtracker.presentation.template_day_screen.DayViewModel.DayScreenState.*
+import kotlinx.coroutines.launch
+
+>>>>>>> 0046a668960accbbda65a9eb19e4208a4729305e
 
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalMaterialApi
@@ -72,7 +90,9 @@ fun DayScreen(
     navController: NavController,
     viewModel: DayViewModel = hiltViewModel()
 
+    viewModel: DayViewModel = hiltViewModel(),
 ) {
+<<<<<<< HEAD
     var date: LocalDate = LocalDate.now()
     var dateString by remember { mutableStateOf(date.toString()) }
     val dialogState = rememberMaterialDialogState()
@@ -502,6 +522,35 @@ fun ExpandableExerciseCard(
     Card(
         modifier = Modifier
             .fillMaxWidth(width)
+=======
+    val typeList = remember { viewModel.exerciseTypes }
+    val exList = remember { viewModel.exList }
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val colors = MaterialTheme.colorScheme
+
+    //State reference
+    val screenState by remember { viewModel.dayScreenState }
+    //holds date on select from calendar and on open app.
+    //var dateString = remember { viewModel.date.value.toString() }
+    var date = remember { viewModel.dateIn }
+    //holder for passing data back to UI from viewmodel
+    var exerciseBundle = remember { viewModel.exerciseBundleMain }
+
+    //Controls Calendar state
+    var exState by remember { mutableStateOf(false) }
+//    MaterialTheme(
+//        colorScheme = MaterialTheme.colorScheme,
+//        shapes = MaterialTheme.shapes,
+//        typography = MaterialTheme.typography
+//    ) {
+
+
+    //holder for main screen
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+>>>>>>> 0046a668960accbbda65a9eb19e4208a4729305e
             .animateContentSize(
                 animationSpec = tween(
                     durationMillis = 300
@@ -532,6 +581,7 @@ fun ExpandableExerciseCard(
                     fontWeight = titleFontWeight,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
+            .background(color = colors.background),
 
                 )
                 IconButton(
@@ -542,32 +592,174 @@ fun ExpandableExerciseCard(
                     onClick = {
                         expandedState = !expandedState
                     }
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) { //fades in/out child element
+        TopBar(viewModel = viewModel, date = date, colors)
+        when (screenState) {
+            LAUNCH -> {
+                //TopBar(viewModel = viewModel, date = date, colors)
+
+            }
+            LOADING -> {
+
+
+            }
+            ERROR -> {
+                Text("Error")
+                scope.launch {
+                    snackbarHostState.showSnackbar("There was an error retrieving log data for this day")
+                }
+            }
+            EMPTY -> {
+                //TopBar(viewModel = viewModel, date = date, colors)
+                Column(
+                    modifier = Modifier.fillMaxHeight(0.9f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
                         contentDescription = "Drop-down arrow"
+                    Text(
+                        modifier = Modifier.alpha(0.5f),
+                        text = "Empty day...",
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize
                     )
-                }
-            }
 
+                }
+                BottomBar(viewModel = viewModel, date = date, colors = colors)
+            }
+            LOADED -> {
+                // TopBar(viewModel = viewModel, date = date, colors)
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
 
             var reps by remember { mutableStateOf("") }
             var dWeight by remember { mutableStateOf("") }
             var rir by remember { mutableStateOf("") }
             var notes by remember { mutableStateOf(movement.notes) }
+                    exerciseBundle.forEachIndexed { index, element ->
 
             if (expandedState) {
+                        ExpandableExerciseCard(
+                            movement = element.get(0),
+                            date = date.value,
+                            exercises = exerciseBundle.get(index)
+                        )
 
                 if (movement is Statics) {
                     StaticsTextFields(movement = movement)
                 } else if (movement is Dynamics) {
                     DynamicsTextFields(movement = movement)
+                    }
+
+
                 }
+                Column(
+                    modifier = Modifier
+                        .background(Color.Transparent)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    BottomBar(viewModel = viewModel, date = date, colors = colors)
+                }
+
             }
+            DayViewModel.DayScreenState.SELECT -> {
+                //viewModel.filterTypeList()
+                SelectionColumn(exerciseList = typeList.value, viewModel = viewModel)
+                //Divider(modifier = Modifier.fillMaxWidth(1f))
+            }
+
+        }
+    }
+    //}
+}
+
+@Composable
+fun BottomBar(
+    viewModel: DayViewModel,
+    date: MutableState<LocalDate>,
+    colors: ColorScheme,
+) {
+
+    Row(
+        modifier = Modifier.fillMaxWidth(0.95f),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        FloatingActionButton(
+            onClick = { viewModel.openSelection() },
+            containerColor = colors.primaryContainer,
+            contentColor = colors.onPrimaryContainer
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "selectionview",
+                tint = colors.primary
+            )
+        }
+    }
+
+}
+
+
+@Composable
+fun TopBar(
+    viewModel: DayViewModel,
+    date: MutableState<LocalDate>,
+    colors: ColorScheme
+) {
+    var exState by remember { mutableStateOf(false) }
+    val formatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+    AnimatedVisibility(visible = exState, enter = fadeIn(), exit = fadeOut()) {
+
+        ExpandCalendar(updateDay = {
+            //date lambda
+            viewModel.updateDate(it) //updating vm
+        })
+    }
+
+
+    //Holder for top bar buttons and stuff
+    Row(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        //opens calendar
+        IconButton(
+            modifier = Modifier
+                .alpha(.8f),
+            onClick = {
+                exState = !exState
+            },
+
+            ) {
+            Icon(
+                imageVector = Icons.Sharp.CalendarViewWeek,
+                contentDescription = "switch to month view",
+                tint = colors.primary
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(formatter.format(date.value), color = colors.primary, modifier = Modifier)
         }
     }
 }
 
+<<<<<<< HEAD
 @Composable
 fun DynamicsTextFields(movement: Dynamics) {
     var reps by remember { mutableStateOf(movement.reps) }
@@ -639,11 +831,14 @@ fun DynamicsTextFields(movement: Dynamics) {
 //        shape = MaterialTheme.shapes.medium
 //    )
 }
+=======
+>>>>>>> 0046a668960accbbda65a9eb19e4208a4729305e
 
 
 @Composable
 fun StaticsTextFields(movement: Statics) {
 
+<<<<<<< HEAD
     var notes by remember { mutableStateOf(movement.notes) }
     var sHoldTime by remember { mutableStateOf(movement.holdTime) }
     var sWeight by remember { mutableStateOf(movement.weight) }
@@ -757,3 +952,6 @@ fun StaticsTextFields(movement: Statics) {
 //    )
 
 }
+=======
+
+>>>>>>> 0046a668960accbbda65a9eb19e4208a4729305e

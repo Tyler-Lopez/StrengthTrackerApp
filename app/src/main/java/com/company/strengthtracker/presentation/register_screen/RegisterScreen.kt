@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,12 +24,16 @@ import androidx.navigation.NavController
 import com.company.strengthtracker.R
 import com.company.strengthtracker.Screen
 import com.company.strengthtracker.presentation.register_screen.RegisterViewModel.RegisterScreenState.*
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
     navController: NavController,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember{ SnackbarHostState() }
 
     val screenState by remember { viewModel.registerScreenState }
     val context = LocalContext.current
@@ -41,8 +46,8 @@ fun RegisterScreen(
             Column {
                 Text(text = "successful registration")
                 Button(onClick = {
-                    navController.navigate(Screen.LoginScreen.route) {
-                        popUpTo(Screen.LoginScreen.route) {
+                    navController.navigate(Screen.DayScreen.route) {
+                        popUpTo(Screen.DayScreen.route) {
                             inclusive = true
                         }
                     }
@@ -162,16 +167,21 @@ fun RegisterScreen(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
                                 if (newUserPassText == passConfirmation) {
-                                    //viewModel.checkPass(newUserPassText)
-                                    viewModel.registerUser(
-                                        email = newUserEmail,
-                                        password = newUserPassText,
-                                        username = newUserId
-                                    )
+                                    if(viewModel.checkPass(newUserPassText))
+                                        viewModel.registerUser(
+                                            email = newUserEmail,
+                                            password = newUserPassText,
+                                            username = newUserId
+                                        )
+                                    else {
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar("Not enough special characters")
+                                        }
+                                    }
                                 } else {
-                                    context.dynamicToast("Passwords do not match")
-                                    passConfirmation = ""
-                                    newUserPassText = ""
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Passwords do not match")
+                                    }
                                 }
                             }
 
@@ -181,8 +191,10 @@ fun RegisterScreen(
                     }
                 }
             }
+            SnackbarHost(hostState = snackbarHostState)
         }
     }
+
 }
 
 fun Context.dynamicToast(msg : String) {
@@ -190,5 +202,4 @@ fun Context.dynamicToast(msg : String) {
     toast.setGravity(Gravity.TOP, 0, 0)
     toast.show()
 }
-
 

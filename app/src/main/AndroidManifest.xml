@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.company.strengthtracker">
+    package="com.company.strengthtracker" >
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".StrengthTrackerApp"
@@ -9,12 +10,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.StrengthTracker">
+        android:theme="@style/Theme.StrengthTracker" >
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.StrengthTracker">
+            android:theme="@style/Theme.StrengthTracker" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

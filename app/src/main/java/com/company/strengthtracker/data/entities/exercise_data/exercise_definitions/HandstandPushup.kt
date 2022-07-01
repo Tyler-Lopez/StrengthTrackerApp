@@ -1,28 +1,22 @@
 package com.company.strengthtracker.data.entities.exercise_data.exercise_definitions
 
+import com.company.strengthtracker.R
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.Dynamics
+import com.company.strengthtracker.data.entities.exercise_data.main_categories.ExState
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.Statics
 
-class HandstandPushup (override val name: String = "Handstand Pushup"
-): Dynamics() {
-    override var aid: String = ""
-    override var reps: String = ""
-    override var weight: String = ""
-    override var rir: String = ""
-    override var notes: String = ""
-
-    constructor(
-        aid: String,
-        reps: String,
-        weight: String,
-        rir: String,
-        notes: String,
-
-    ) : this() {
-        this.aid = aid
-        this.reps = reps
-        this.weight = weight
-        this.rir = rir
-        this.notes = notes
-    }
-}
+class HandstandPushup (
+    name: String = "Handstand Pushup",
+    weight: String = "",
+    rir:String = "",
+    setNumber: Long = -1,
+    reps:String = "",
+    override val exType: ExState = ExState.DYNAMIC,
+    override val iconId: Int = R.drawable.ic_action_name
+): Dynamics(
+    name = name,
+    weight = weight,
+    reps = reps,
+    rir = rir,
+    setNumber = setNumber,
+    iconId = iconId)

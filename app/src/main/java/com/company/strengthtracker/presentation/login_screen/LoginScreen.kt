@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,13 +31,12 @@ If so, navigate them to home screen.
 
  */
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     navController: NavController,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
-
-
     val loginScreenState by remember { viewModel.loginScreenState }
 
     when (loginScreenState) {
@@ -48,17 +48,18 @@ fun LoginScreen(
         LOGIN_SUCCESS -> {
             LaunchedEffect(Unit) {
                 if (navController.currentBackStackEntry?.destination?.route == Screen.LoginScreen.route)
-                    navController.navigate(Screen.WelcomeScreen.route) {
+                    navController.navigate(Screen.DayScreen.route) {
                         popUpTo(Screen.LoginScreen.route) {
                             inclusive = true
                         }
                     }
-                else navController.navigate(Screen.WelcomeScreen.route)
+                else navController.navigate(Screen.DayScreen.route)
             }
         }
         // Invalid login attempt
         LOGIN_FAILURE -> {
             Text("Invalid login attempt")
+            navController.navigate(Screen.LoginScreen.route)
         }
         // Present Login UI to user
         STANDBY -> {

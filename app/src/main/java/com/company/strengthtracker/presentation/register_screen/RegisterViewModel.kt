@@ -56,12 +56,11 @@ class RegisterViewModel @Inject constructor(
         password: String
     ): Boolean {
         var pattern: Pattern
-        var matcher: Matcher
 
-        val password_pattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{4,}$"
+        val passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{4,}$"
 
-        pattern = Pattern.compile(password_pattern)
-        matcher = pattern.matcher(password)
+        pattern = Pattern.compile(passwordPattern)
+        var matcher: Matcher = pattern.matcher(password)
 
         return matcher.matches()
     }

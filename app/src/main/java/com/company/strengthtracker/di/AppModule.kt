@@ -1,7 +1,11 @@
 package com.company.strengthtracker.di
 
+import com.company.strengthtracker.data.repository.LogRepositoryImpl
+import com.company.strengthtracker.domain.repository.LogRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,6 +19,16 @@ object AppModule {
     @Singleton
     @Provides
     fun provideAuth() = FirebaseAuth.getInstance()
+
+    @Singleton
+    @Provides
+    fun provideSetRepository(): LogRepository {
+        return LogRepositoryImpl(db = provideDb())
+    }
+
+    @Singleton
+    @Provides
+    fun provideDb() = Firebase.firestore
 
     @Singleton
     @Provides

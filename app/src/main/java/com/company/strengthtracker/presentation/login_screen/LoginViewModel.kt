@@ -19,6 +19,8 @@ class LoginViewModel @Inject constructor(
     private val authRepositoryImpl: AuthRepositoryImpl
 ) : ViewModel() {
 
+
+
     // Possible states that this screen should take
     enum class LoginScreenState {
         LAUNCH, STANDBY, LOADING, LOGIN_SUCCESS, LOGIN_FAILURE
@@ -30,7 +32,9 @@ class LoginViewModel @Inject constructor(
     // Equal to null if not currently logged in
     var currentUser: MutableState<FirebaseUser?> = mutableStateOf(null)
 
-
+//    init{
+//        isUserLoggedIn()
+//    }
 
     // Invoked on initialization to determine if user is already logged-in
     fun isUserLoggedIn() {

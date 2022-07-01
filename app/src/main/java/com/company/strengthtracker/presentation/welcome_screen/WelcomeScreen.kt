@@ -3,6 +3,8 @@ package com.company.strengthtracker.presentation.welcome_screen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.navigation.NavController
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -66,7 +68,10 @@ fun WelcomeScreen(
                     ) {
                         Text("Delete")
                     }
+                Button(onClick = {navController.navigate(Screen.DayScreen.route)}){
+                    Text("Day View")
                 }
+                //navController.navigate(Screen.DayScreen.route)
             }
         }
         // Disconnected, return to login-screen
