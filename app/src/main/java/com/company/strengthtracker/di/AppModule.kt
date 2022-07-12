@@ -1,7 +1,7 @@
 package com.company.strengthtracker.di
 
-import com.company.strengthtracker.data.repository.LogRepositoryImpl
-import com.company.strengthtracker.domain.repository.LogRepository
+import com.company.strengthtracker.data.repository.SetRepositoryImpl
+import com.company.strengthtracker.domain.repository.SetRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -22,8 +22,8 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideSetRepository(): LogRepository {
-        return LogRepositoryImpl(db = provideDb())
+    fun provideSetRepository(): SetRepository {
+        return SetRepositoryImpl(db = provideDb())
     }
 
     @Singleton

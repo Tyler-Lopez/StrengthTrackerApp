@@ -632,6 +632,7 @@ fun ExpandableExerciseCard(
             }
             LOADED -> {
                 // TopBar(viewModel = viewModel, date = date, colors)
+               // TopBar(viewModel = viewModel, date = date, colors)
 
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -645,12 +646,20 @@ fun ExpandableExerciseCard(
             var notes by remember { mutableStateOf(movement.notes) }
                     exerciseBundle.forEachIndexed { index, element ->
 
+<<<<<<< HEAD
             if (expandedState) {
                         ExpandableExerciseCard(
                             movement = element.get(0),
                             date = date.value,
                             exercises = exerciseBundle.get(index)
                         )
+=======
+                            ExpandableExerciseCard(
+                                movement = element.get(0),
+                                date = date.value,
+                                exercises = exerciseBundle.get(index)
+                            )
+>>>>>>> ec3199f1cba10f45eba94990a309b1dad7fa6823
 
                 if (movement is Statics) {
                     StaticsTextFields(movement = movement)
@@ -666,6 +675,7 @@ fun ExpandableExerciseCard(
                         .fillMaxSize(),
                     verticalArrangement = Arrangement.Bottom
                 ) {
+                Column(modifier = Modifier.background(Color.Transparent).fillMaxSize(), verticalArrangement = Arrangement.Bottom){
                     BottomBar(viewModel = viewModel, date = date, colors = colors)
                 }
 
@@ -697,12 +707,23 @@ fun BottomBar(
             onClick = { viewModel.openSelection() },
             containerColor = colors.primaryContainer,
             contentColor = colors.onPrimaryContainer
+        Row(
+            modifier = Modifier.fillMaxWidth(0.95f),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
                 contentDescription = "selectionview",
                 tint = colors.primary
             )
+            FloatingActionButton(onClick = { viewModel.openSelection() }, containerColor = colors.primaryContainer, contentColor = colors.onPrimaryContainer) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "selectionview",
+                    tint = colors.primary
+                )
+            }
         }
     }
 
@@ -714,6 +735,7 @@ fun TopBar(
     viewModel: DayViewModel,
     date: MutableState<LocalDate>,
     colors: ColorScheme
+    colors:ColorScheme
 ) {
     var exState by remember { mutableStateOf(false) }
     val formatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
@@ -731,6 +753,7 @@ fun TopBar(
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth(),
+            .padding(10.dp).fillMaxWidth(),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -752,11 +775,15 @@ fun TopBar(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
+        Row(modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(formatter.format(date.value), color = colors.primary, modifier = Modifier)
         }
     }
+        }
+
 }
 
 <<<<<<< HEAD

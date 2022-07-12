@@ -1,6 +1,10 @@
 package com.company.strengthtracker.presentation.template_day_screen
 
+<<<<<<< HEAD
 import androidx.compose.runtime.mutableStateOf
+=======
+import android.content.ContentValues
+>>>>>>> ec3199f1cba10f45eba94990a309b1dad7fa6823
 import android.content.ContentValues.TAG
 import android.os.Build
 import android.util.Log
@@ -9,21 +13,27 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.company.strengthtracker.data.entities.User
 import com.company.strengthtracker.data.entities.exercise_data.exercise_definitions.FrontLever
 import com.company.strengthtracker.data.entities.exercise_data.exercise_definitions.Planche
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.*
 import com.company.strengthtracker.data.repository.AuthRepositoryImpl
 import com.company.strengthtracker.data.repository.LogRepositoryImpl
+import com.company.strengthtracker.data.repository.SetRepositoryImpl
+import com.company.strengthtracker.data.repository.UsersRepositoryImpl
 import com.company.strengthtracker.domain.use_cases.AddSetToLogUseCase
 import com.company.strengthtracker.domain.use_cases.UpdateViewmodelLogUseCase
 import com.company.strengthtracker.domain.util.Resource
+import com.company.strengthtracker.presentation.register_screen.RegisterViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.util.*
 import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -32,6 +42,7 @@ class DayViewModel @Inject constructor(
     private val authRepositoryImpl: AuthRepositoryImpl
     private val authRepositoryImpl: AuthRepositoryImpl,
     private val setRepositoryImpl: LogRepositoryImpl,
+    private val setRepositoryImpl: SetRepositoryImpl,
     private val updateViewModel: UpdateViewmodelLogUseCase,
     private val addSetUseCase: AddSetToLogUseCase
 ) : ViewModel() {
@@ -92,6 +103,7 @@ class DayViewModel @Inject constructor(
     }
 
     init {
+
         getSetDataForDate()
     }
 
@@ -105,6 +117,7 @@ class DayViewModel @Inject constructor(
                 //val updateLog = updateViewModel.updateViewLogUseCase(date = dateIn.value.toString(), userUid = response)
                 val updateLog = updateViewModel.updateViewLog(
                     date = dateIn.value,
+                    date = dateIn.value.toString(),
                     userUid = response
                 )
                 //Success
