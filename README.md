@@ -1,5 +1,5 @@
 <center>
-  <img src="https://user-images.githubusercontent.com/97764140/179423277-a956bb72-5ef0-43bb-b562-732214a55da1.jpg" width="300" height = "300">
+  <img src="https://user-images.githubusercontent.com/97764140/179423277-a956bb72-5ef0-43bb-b562-732214a55da1.jpg" width="300" height = "150">
 <h1 align ="center">STRENGTH TRACKER | Track Calisthenics Progress</h1>
 </center>
  
