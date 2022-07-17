@@ -30,7 +30,6 @@ class RegisterViewModel @Inject constructor(
     fun registerUser(
         email: String,
         password: String,
-        username: String
     ) {
         registerScreenState.value = RegisterScreenState.LOADING
 
@@ -41,7 +40,6 @@ class RegisterViewModel @Inject constructor(
                     User(
                         uid = response.data,
                         email = email,
-                        username = username
                     )
                 )
 

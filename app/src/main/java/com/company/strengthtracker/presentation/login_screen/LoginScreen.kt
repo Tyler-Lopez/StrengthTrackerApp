@@ -1,6 +1,7 @@
 package com.company.strengthtracker.presentation.login_screen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import com.company.strengthtracker.R
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,9 +11,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.navigation.NavController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -67,7 +72,9 @@ fun LoginScreen(
             // This column fills all nested composables to the entire size of the screen and centers
 
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -77,40 +84,41 @@ fun LoginScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    /* TEXT FIELDS */
-                    // On remember mutableStateOf(): https://dev.to/zachklipp/remember-mutablestateof-a-cheat-sheet-10ma
                     var userIdText by remember { mutableStateOf("") }
                     var userPassText by remember { mutableStateOf("") }
-                    Box(modifier = Modifier.fillMaxWidth(0.5f)) {
-                        Image(
-                            painter = painterResource(id = R.drawable.gigachad),
-                            contentDescription = "Giga Chad"
-                        )
+
+                    Text(text = "Strength Tracker", fontSize = MaterialTheme.typography.titleLarge.fontSize, fontStyle = FontStyle.Normal , fontFamily = FontFamily.Monospace,fontWeight = MaterialTheme.typography.titleLarge.fontWeight,)
+                    Box(modifier = Modifier.fillMaxWidth(1f), contentAlignment = Alignment.Center) {
+                        Icon(painter = painterResource(id = R.drawable.hristov_planche_smooth), contentDescription = "launch icon", /*modifier = Modifier.scale(scaleX = 2f, scaleY = 2f)*/)
                     }
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surface),
+                        elevation = CardDefaults.cardElevation(2.dp)
                     ) {
                         Column(
                             modifier = Modifier
-                                .padding(16.dp)
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            TextField(
+                            OutlinedTextField(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(0.dp,0.dp,0.dp,4.dp),
+                                    .padding(0.dp, 0.dp, 0.dp, 4.dp),
                                 value = userIdText,
                                 shape = MaterialTheme.shapes.medium,
                                 onValueChange = { userIdText = it },
-                                label = { Text("UserID") },
+                                label = { Text("Email or Username") },
 
                                 colors = TextFieldDefaults.textFieldColors(
-                                    focusedIndicatorColor = Color.Transparent,
-                                    disabledIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent,
+
+                                    focusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
+
                                 ),
                             )
-                            TextField(
+                            OutlinedTextField(
                                 modifier = Modifier.fillMaxWidth(),
                                 visualTransformation = PasswordVisualTransformation(),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -119,16 +127,15 @@ fun LoginScreen(
                                 label = { Text("Password") },
                                 shape = MaterialTheme.shapes.medium,
                                 colors = TextFieldDefaults.textFieldColors(
-                                    focusedIndicatorColor = Color.Transparent,
-                                    disabledIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent,
+                                    focusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
+//                                    unfocusedIndicatorColor = Color.Transparent,
                                 )
                             )
                             /* BUTTONS */
                             // Login
                             Button(
                                 modifier = Modifier
-                                    .fillMaxWidth()
+                                    .fillMaxWidth(0.6f)
                                     .padding(top = 8.dp),
                                 onClick = {
                                     viewModel.loginUser(userIdText, userPassText)
@@ -140,12 +147,11 @@ fun LoginScreen(
                             }
                             // Register
                             Button(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth(0.6f),
                                 onClick = {
                                     // TODO
                                     // Take controller parameter and navigate to a register screen
                                     navController.navigate("register_screen")
-                                    viewModel.loginScreenState.value = LAUNCH
                                 }
                             ) {
                                 Text(

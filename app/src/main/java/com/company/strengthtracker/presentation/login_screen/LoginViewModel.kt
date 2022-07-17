@@ -32,9 +32,9 @@ class LoginViewModel @Inject constructor(
     // Equal to null if not currently logged in
     var currentUser: MutableState<FirebaseUser?> = mutableStateOf(null)
 
-//    init{
-//        isUserLoggedIn()
-//    }
+    init{
+        isUserLoggedIn()
+    }
 
     // Invoked on initialization to determine if user is already logged-in
     fun isUserLoggedIn() {
@@ -68,6 +68,7 @@ class LoginViewModel @Inject constructor(
                 is Resource.Success -> LoginScreenState.LOGIN_SUCCESS
                 is Resource.Error -> LoginScreenState.LOGIN_FAILURE
             }
+
         }
     }
 

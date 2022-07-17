@@ -41,7 +41,7 @@ private val DarkColorPalette = darkColorScheme(
     errorContainer = Red30,
     onErrorContainer = Red90,
 
-    background = GreyBlue10,
+    background = Grey10,
     onBackground = GreyBlue90,
 
     surface = GreyTeal30,

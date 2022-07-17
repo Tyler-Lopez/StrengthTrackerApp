@@ -27,24 +27,24 @@ import androidx.lifecycle.ViewModel
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.AllExercises
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GenericAddPopUp(
     movement: AllExercises,
-    viewModel: DayViewModel = hiltViewModel(),
-    content: @Composable() () -> Unit
+    updateViewModel: (MutableList<AllExercises>) -> Unit,
+    closeSelection: () -> Unit,
+    dialog: Boolean
 ) {
     //controller boolean for state of pop up
-    var openDialog by remember { mutableStateOf(true) }
 
 
-    //display dialog
+    var openDialog = remember { mutableStateOf(dialog) }
+    //display diitalog
 
-    if (openDialog) {
+    if (openDialog.value) {
         Dialog(
             //dismissing open dialog
-            onDismissRequest = { openDialog = false },
+            onDismissRequest = { openDialog.value = false },
 
             //idk
             properties = DialogProperties(),
@@ -91,8 +91,9 @@ fun GenericAddPopUp(
                                         var checked by remember { mutableStateOf(false) }
                                         Checkbox(
                                             checked = checked,
-                                            onCheckedChange = { checked = !checked
-                                            property.setValue(checked)
+                                            onCheckedChange = {
+                                                checked = !checked
+                                                property.setValue(checked)
                                             })
 
                                     }
@@ -114,8 +115,10 @@ fun GenericAddPopUp(
 
                             onClick = {
                                 //add action here
-                                viewModel.exerciseBundleMain.add(mutableListOf(movement))
-                                openDialog = false
+//                                viewModel.exerciseBundleMain.add(mutableListOf(movement))
+                                updateViewModel(mutableListOf(movement))
+
+                                openDialog.value = false
                             },
                             elevation = ButtonDefaults.buttonElevation(0.dp),
                             colors = ButtonDefaults.buttonColors(
@@ -127,7 +130,7 @@ fun GenericAddPopUp(
                         }
                         //cancel add
                         Button(
-                            onClick = { openDialog = false },
+                            onClick = { openDialog.value = false },
                             elevation = ButtonDefaults.buttonElevation(0.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Transparent,
@@ -152,7 +155,8 @@ fun GenericAddPopUp(
 @Composable
 fun SelectionColumn(
     exerciseList: List<AllExercises>,
-    viewModel: DayViewModel
+    updateViewModel: (MutableList<AllExercises>) -> Unit,
+    closeSelection: () -> Unit,
 ) {
 
     Scaffold(topBar = {
@@ -163,7 +167,7 @@ fun SelectionColumn(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            IconButton(onClick = { viewModel.closeSelection() })
+            IconButton(onClick = closeSelection)
             {
                 Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "backToDayView")
             }
@@ -186,9 +190,8 @@ fun SelectionColumn(
                     .fillMaxWidth(1f)
                     .alpha(0.4f), color = MaterialTheme.colorScheme.onBackground
             )
-            exerciseList.forEach {
-                it
-                SelectionCard(movement = it, viewModel = viewModel, "selectionItem")
+            exerciseList.forEach { it ->
+                SelectionCard(movement = it, "selectionItem", updateViewModel = updateViewModel, closeSelection = closeSelection)
                 Divider(
                     modifier = Modifier
                         .fillMaxWidth(1f)
@@ -204,10 +207,11 @@ fun SelectionColumn(
 @Composable
 fun SelectionCard(
     movement: AllExercises,
-    viewModel: DayViewModel,
     contentDescription: String,
+    updateViewModel: (MutableList<AllExercises>) -> Unit,
+    closeSelection: () -> Unit
 ) {
-    var dialog by remember { mutableStateOf(false) }
+    var dialog = remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -218,7 +222,7 @@ fun SelectionCard(
         Column(
             modifier = Modifier
                 .clickable(true, onClick = {
-                    dialog = true
+                    dialog.value = true
 
 //                    viewModel.exerciseBundleMain.add(mutableStateListOf(movement))
 //                    viewModel.closeSelection()
@@ -248,7 +252,6 @@ fun SelectionCard(
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center
                 ) {
-
                     Text(
                         movement.name,
                         modifier = Modifier.padding(start = 5.dp),
@@ -256,23 +259,115 @@ fun SelectionCard(
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    IconButton(onClick = { /*TODO Go to a details screen*/ }) {
-                        Icon(imageVector = Icons.Filled.Menu, contentDescription = "Bruh")
-
-                    }
-                }
             }
 
         }
-        //Divider(modifier = Modifier.fillMaxWidth(1f))
-        if (dialog) {
-            GenericAddPopUp(movement = movement) {
-                TextField(value = "bruh", onValueChange = {})
+        //dialog box for adding an exercise to the day
+        if (dialog.value) {
+            Dialog(
+                //dismissing open dialog
+                onDismissRequest = { dialog.value = false },
+
+                //idk
+                properties = DialogProperties(),
+
+                ) {
+                //Card container
+                Card(
+                    modifier = Modifier
+                        .size(300.dp, 340.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                    shape = RoundedCornerShape(10.dp)
+//
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.SpaceEvenly,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Column() {
+
+                            for (property in movement.properties) {
+                                Row(
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    TextField(
+                                        modifier = Modifier.padding(
+                                            start = 8.dp,
+                                            end = 8.dp,
+                                            top = 0.dp,
+                                            bottom = 0.dp
+                                        ),
+                                        value = property.key, onValueChange = {}, readOnly = true,
+                                        colors = TextFieldDefaults.textFieldColors(
+                                            textColor = MaterialTheme.colorScheme.onSurface,
+
+                                            focusedIndicatorColor = Color.Transparent,
+
+                                            unfocusedIndicatorColor = Color.Transparent,
+                                            disabledIndicatorColor = Color.Transparent,
+                                            disabledLabelColor = Color.Transparent,
+                                        ),
+                                        trailingIcon = {
+                                            var checked by remember { mutableStateOf(false) }
+                                            Checkbox(
+                                                checked = checked,
+                                                onCheckedChange = {
+                                                    checked = !checked
+                                                    property.setValue(checked)
+                                                })
+
+                                        }
+                                    )
+
+                                }
+                            }
+                        }
+
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.Bottom
+                        ) {
+
+
+                            Button(
+
+                                onClick = {
+                                    //add action here
+//                                viewModel.exerciseBundleMain.add(mutableListOf(movement))
+                                    updateViewModel(mutableListOf(movement))
+                                    closeSelection()
+                                    dialog.value = false
+                                },
+                                elevation = ButtonDefaults.buttonElevation(0.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.Transparent,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            ) {
+                                Text(text = "Add")
+                            }
+                            //cancel add
+                            Button(
+                                onClick = { dialog.value = false },
+                                elevation = ButtonDefaults.buttonElevation(0.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.Transparent,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            ) {
+                                Text(text = "Cancel")
+                            }
+                        }
+
+
+                    }
+
+
+                }
             }
         }
 

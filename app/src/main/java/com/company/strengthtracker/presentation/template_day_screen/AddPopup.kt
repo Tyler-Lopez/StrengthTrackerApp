@@ -25,6 +25,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.company.strengthtracker.data.entities.exercise_data.exercise_definitions.Progressions
+import com.company.strengthtracker.data.entities.exercise_data.main_categories.AllExercises
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.Statics
 import java.time.LocalDate
 
@@ -34,25 +35,19 @@ import java.time.LocalDate
 @Composable
 fun StaticsAddSetPopUp(
     movement: Statics,
-    viewModel: DayViewModel = hiltViewModel(),
-    date: LocalDate,
-    setsSoFar: Long
-
-
+    addSetHelp: (AllExercises) -> Unit,
+    openDialog: Boolean,
+    closeDialog: () -> Unit
 ) {
-    var openDialog by remember { mutableStateOf(true) }
-
-
-
     if (openDialog) {
         Dialog(
-            onDismissRequest = { openDialog = false },
-            properties = DialogProperties(),
+            onDismissRequest = { },
+            properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true),
 
             ) {
             Card(
                 modifier = Modifier
-                    .size(300.dp, 370.dp)
+                    .size(320.dp, 470.dp)
                     .background(MaterialTheme.colorScheme.surfaceVariant),
                 shape = RoundedCornerShape(10.dp)
 //
@@ -61,18 +56,16 @@ fun StaticsAddSetPopUp(
                     verticalArrangement = Arrangement.SpaceEvenly,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    if(movement.properties.getValue("Progression"))
-                    {
+                    if (movement.properties.getValue("Progression")) {
                         DropDownTextField(
                             label = "Progression",
-                            movement = movement
+
                         ) {
 
                             movement.progression = it
                         }
                     }
-                    if(movement.properties.getValue("Hold time"))
-                    {
+                    if (movement.properties.getValue("Hold time")) {
                         TimeIncrementTextField(
                             label = "Time",
                             movement = movement,
@@ -82,8 +75,7 @@ fun StaticsAddSetPopUp(
                             }
                         )
                     }
-                    if(movement.properties.getValue("Weight"))
-                    {
+                    if (movement.properties.getValue("Weight")) {
                         WeightIncrementTextField(
                             movement = movement,
                             label = "Assistance",
@@ -93,19 +85,17 @@ fun StaticsAddSetPopUp(
                             movement.weight = it
                         }
                     }
-                    if(movement.properties.getValue("Seconds in reserve"))
-                    {
+                    if (movement.properties.getValue("Seconds in reserve")) {
                         TimeIncrementTextField(
                             movement = movement,
                             label = "SiR",
-                            trailingLabel = "sec"
+                            trailingLabel = ""
                         ) {
 
                             movement.sir = it
                         }
                     }
-                    if(movement.properties.getValue("Reps"))
-                    {
+                    if (movement.properties.getValue("Reps")) {
                         //TODO implement reps text field
                         TimeIncrementTextField(
                             label = "Reps",
@@ -128,13 +118,8 @@ fun StaticsAddSetPopUp(
                         Button(
 
                             onClick = {
-
-                                /*PASS DATA TO VIEWMODEL, IMMEDIATELY MAKE NEW DOCUMENT*/
-                                viewModel.addSetHelp(
-                                    movement = movement
-                                )
-                                openDialog = false
-
+                                addSetHelp(movement)
+                                closeDialog()
                             },
                             elevation = ButtonDefaults.buttonElevation(0.dp),
                             colors = ButtonDefaults.buttonColors(
@@ -146,7 +131,7 @@ fun StaticsAddSetPopUp(
                         }
                         //cancel add
                         Button(
-                            onClick = { openDialog = false },
+                            onClick = { closeDialog() },
                             elevation = ButtonDefaults.buttonElevation(0.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Transparent,
@@ -372,7 +357,6 @@ fun TimeIncrementTextField(
 //Textfield with a dropdown menu, currently doesnt take a list as input but could add
 @Composable
 fun DropDownTextField(
-    movement: Statics,
     label: String,
     onDataChanged: (String) -> Unit
 ) {

@@ -3,6 +3,8 @@ package com.company.strengthtracker.presentation.template_day_screen
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,6 +18,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.company.strengthtracker.data.entities.exercise_data.exercise_definitions.Progressions
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.AllExercises
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.Dynamics
 import com.company.strengthtracker.data.entities.exercise_data.main_categories.Statics
@@ -26,21 +30,20 @@ import java.time.LocalDate
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpandableExerciseCard(
+    addSetHelp: (AllExercises) -> Unit,
     movement: AllExercises,
-    titleFontSize: TextUnit = MaterialTheme.typography.titleMedium.fontSize,
+    titleFontSize: TextUnit = MaterialTheme.typography.titleLarge.fontSize,
     titleFontWeight: FontWeight = FontWeight.Bold,
     width: Float = 1.0f,
     padding: Dp = 10.dp,
-    date: LocalDate,
-    exercises: MutableList<AllExercises>
+    exercises: MutableList<AllExercises>,
+    navController: NavController
 ) {
-    var bruh: Long = 0
     //for tracking how many sets have been logged, just increments in a lambda
-    var setsSoFar by remember { mutableStateOf(bruh) }
     val date = LocalDate.now()
-    //card title
     val title = movement.name
-
+    var dropdown by remember { mutableStateOf(false) }
+    val optionsList = mutableListOf("Information", "Notes", "Progress", "Remove Exercise")
     //managed expanded state of the set log pop up
     var expandedState by remember { mutableStateOf(false) }
     Card(
@@ -55,7 +58,7 @@ fun ExpandableExerciseCard(
             .shadow(3.dp),
         shape = Shapes.medium,
         onClick = {
-            expandedState = !expandedState
+            expandedState = true
         }
     ) {
         Column(
@@ -65,7 +68,7 @@ fun ExpandableExerciseCard(
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Top,
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
                 //test widget
@@ -77,6 +80,36 @@ fun ExpandableExerciseCard(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.alpha(alpha = 0.8f)
                 )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
+                ) {
+//                    IconButton(onClick = { dropdown != dropdown}){
+//                        Icon(imageVector = Icons.Filled.Menu, contentDescription = "exercise detail menu")
+//                        DropdownMenu(expanded = dropdown.value, onDismissRequest = { dropdown.value = false }) {
+//                            DropdownMenuItem(text = {Text("Information")}, onClick = { /*TODO*/ })
+//                            DropdownMenuItem(text = {Text("Notes")}, onClick = { /*TODO*/ })
+//                            DropdownMenuItem(text = {Text("Progress")}, onClick = {navController.navigate(route = "progress_screen")})
+//                            DropdownMenuItem(text = {Text("Remove")}, onClick = { /*TODO*/ })
+//                        }
+//                    }
+                    IconButton(
+                        onClick = { dropdown = true }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowDropDown,
+                            contentDescription = "drop-down-arrow"
+                        )
+                        DropdownMenu(expanded = dropdown, onDismissRequest = { dropdown= false }) {
+
+                            DropdownMenuItem(text = {Text("Information")}, onClick = { /*TODO*/ })
+                            DropdownMenuItem(text = {Text("Notes")}, onClick = { /*TODO*/ })
+                            DropdownMenuItem(text = {Text("Progress")}, onClick = {navController.navigate(route = "test_screen")})
+                            DropdownMenuItem(text = {Text("Remove")}, onClick = { /*TODO*/ })
+                        }
+                    }
+                }
             }
             Column(
                 modifier = Modifier.fillMaxWidth()
@@ -93,9 +126,9 @@ fun ExpandableExerciseCard(
                 ) {
 
                     Text(
-                        "Set No.",
+                        "Reps",
                         fontSize = 14.sp,
-                        modifier = Modifier.weight(0.98f),
+                        modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Start
                     )
 
@@ -133,12 +166,13 @@ fun ExpandableExerciseCard(
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.Start
             ) {
-                Column{
+                Column {
                     exercises.forEach { exercise ->
                         CondensedSetRow(movement = exercise)
                     }
                 }
             }
+
 
             //popup controller, will have different popups maybe? not sure
             if (expandedState) {
@@ -147,14 +181,17 @@ fun ExpandableExerciseCard(
 
                     StaticsAddSetPopUp(
                         movement = movement,
-                        date = date,
-                        setsSoFar = setsSoFar
+                        addSetHelp = addSetHelp,
+                        openDialog = expandedState,
+                        closeDialog = { expandedState = false }
                     )
                     //StaticsTextFields(movement = movement)
                 } else if (movement is Dynamics) {
-                    //  DynamicsTextFields(movement = movement)
+                    TODO()
                 }
             }
+
+
         }
     }
 }
@@ -172,7 +209,7 @@ fun CondensedSetRow(
     {
         if (movement is Statics) {
             Text(
-                text = "",
+                text = movement.reps,
                 fontSize = 14.sp,
                 modifier = Modifier.weight(0.98f),
                 textAlign = TextAlign.Start

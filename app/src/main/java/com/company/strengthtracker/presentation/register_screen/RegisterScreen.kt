@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.Gravity
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -15,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -43,19 +46,12 @@ fun RegisterScreen(
             Text(text = "LOADING")
         }
         REGISTER_SUCCESS -> {
-            Column {
-                Text(text = "successful registration")
-                Button(onClick = {
                     navController.navigate(Screen.DayScreen.route) {
                         popUpTo(Screen.DayScreen.route) {
                             inclusive = true
                         }
                     }
-                }) {
-                    Text("click to return to login screen")
-                }
             }
-        }
         REGISTER_ERROR -> {
             Column {
                 Text(text = "ERROR")
@@ -72,30 +68,31 @@ fun RegisterScreen(
             /* COLUMNS */
             // This column fills all nested composables to the entire size of the screen and centers
             Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 var newUserEmail by remember { mutableStateOf("") }
                 var newUserDob by remember { mutableStateOf("") }
-                var newUserId by remember { mutableStateOf("") }
                 var newUserPassText by remember { mutableStateOf("") }
                 var passConfirmation by remember { mutableStateOf("") }
                 var passwordVis by remember { mutableStateOf(false) }
 
-                Box(modifier = Modifier.fillMaxWidth(0.5f)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.gigachad),
-                        contentDescription = "Giga Chad"
-                    )
-                }
+
+                    Text(text = "Strength Tracker", fontSize = MaterialTheme.typography.titleLarge.fontSize, fontStyle = FontStyle.Normal , fontFamily = FontFamily.Monospace,fontWeight = MaterialTheme.typography.titleLarge.fontWeight,)
+                    Box(modifier = Modifier.fillMaxWidth(1f), contentAlignment = Alignment.Center) {
+                        Icon(painter = painterResource(id = R.drawable.hristov_planche_smooth), contentDescription = "launch icon", /*modifier = Modifier.scale(scaleX = 2f, scaleY = 2f)*/)
+                        //Image(painter = painterResource(id = R.drawable.hristov_planche_smooth), contentDescription = "launch icon", contentScale = ContentScale.FillWidth)
+                    }
+
                 Card(modifier = Modifier.fillMaxWidth(0.8f)) {
                     Column(
-                        modifier = Modifier.padding(10.dp),
+                        modifier = Modifier.padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceEvenly
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        TextField(
+                        //email textfield
+                        OutlinedTextField(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(0.dp, 3.dp, 0.dp, 3.dp),
@@ -104,28 +101,12 @@ fun RegisterScreen(
                             onValueChange = { newUserEmail = it },
                             label = { Text("Email") },
                             colors = TextFieldDefaults.textFieldColors(
-                                focusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
+                                focusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
                             ),
                             shape = MaterialTheme.shapes.medium
                         )
-                        TextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(0.dp, 3.dp, 0.dp, 3.dp),
-                            value = newUserId,
-                            onValueChange = { newUserId = it },
-                            label = { Text("Username") },
-                            colors = TextFieldDefaults.textFieldColors(
-                                focusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                            ),
-                            shape = MaterialTheme.shapes.medium
-                        )
-
-                        TextField(
+                            //Password textfield
+                        OutlinedTextField(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(0.dp, 3.dp, 0.dp, 3.dp),
@@ -139,13 +120,13 @@ fun RegisterScreen(
                             trailingIcon = { },
                             label = { Text("Password") },
                             colors = TextFieldDefaults.textFieldColors(
-                                focusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
+
+                                focusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
                             ),
                             shape = MaterialTheme.shapes.medium
                         )
-                        TextField(
+                        //Confirm Password textfield
+                        OutlinedTextField(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(0.dp, 3.dp, 0.dp, 3.dp),
@@ -157,21 +138,19 @@ fun RegisterScreen(
                             },
                             label = { Text("Confirm password") },
                             colors = TextFieldDefaults.textFieldColors(
-                                focusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
+
+                                focusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
                             ),
                             shape = MaterialTheme.shapes.medium
                         )
                         Button(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth(0.6f),
                             onClick = {
                                 if (newUserPassText == passConfirmation) {
                                     if(viewModel.checkPass(newUserPassText))
                                         viewModel.registerUser(
                                             email = newUserEmail,
                                             password = newUserPassText,
-                                            username = newUserId
                                         )
                                     else {
                                         scope.launch {

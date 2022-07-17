@@ -10,6 +10,7 @@ import androidx.navigation.compose.*
 import androidx.navigation.compose.rememberNavController
 import com.company.strengthtracker.presentation.forgot_password_screen.ForgotPasswordScreen
 import com.company.strengthtracker.presentation.login_screen.LoginScreen
+import com.company.strengthtracker.presentation.test_screen.TestScreen
 import com.company.strengthtracker.presentation.welcome_screen.WelcomeScreen
 import com.company.strengthtracker.presentation.register_screen.RegisterScreen
 import com.company.strengthtracker.presentation.template_day_screen.DayScreen
@@ -51,6 +52,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(route = Screen.DayScreen.route) {
                         DayScreen(navController = navController)
+                    }
+                    composable(route = Screen.TestScreen.route) {
+                        TestScreen(navController = navController)
                     }
                 }
 

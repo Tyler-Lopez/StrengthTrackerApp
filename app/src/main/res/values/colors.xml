@@ -15,4 +15,7 @@
     <color name="med_grey_blue">#B0B1BE</color>
     <color name="dark_grey_blue">#A9A9B7</color>
     <color name="dark_grey">#313131</color>
+
+
+    //MaterialThemeColors
 </resources>
