@@ -17,3 +17,14 @@ Log various metrics, currently focuses around calisthenics exercises but more ar
 <img src="https://user-images.githubusercontent.com/97764140/179382557-ec086509-5d3c-4f3e-8893-196df7d48f43.png" alt="drawing" width="200"/>
 <img src= "https://user-images.githubusercontent.com/97764140/179382597-9f9c9257-8574-49b1-8370-90a68e1e2087.png" alt="drawing" width="200"/>
 
+<img src= "https://user-images.githubusercontent.com/97764140/179382689-1cff234a-9e33-49fb-b6f2-4c4f1fde7511.png" alt="drawing" width="200"/>
+
+<div class = "row">
+  <div class = "column">
+<img src= https://user-images.githubusercontent.com/97764140/179382690-af982c78-a3e2-4c10-afe4-1a73e43315d1.png alt="drawing" width="100%"/>
+  </div>
+  <div class = "column">
+<img src= https://user-images.githubusercontent.com/97764140/179382741-2c53427e-9189-4842-808d-6c2f38b5c6d7.png alt="drawing" width="100%"/>
+  </div>
+  </div>
+
