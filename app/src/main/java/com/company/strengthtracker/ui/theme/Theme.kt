@@ -6,18 +6,11 @@ package com.company.strengthtracker.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
 private val DarkColorPalette = darkColorScheme(
     primary = Grey80,
     onPrimary = Grey20,
@@ -55,10 +48,6 @@ private val DarkColorPalette = darkColorScheme(
     outline = GreyBlue80
 )
 
-private val LightColorPalette = lightColors(
-    primary = Color.DarkGray,
-    primaryVariant = paleBlue,
-    secondary = Teal200,
 private val LightColorPalette = lightColorScheme(
     primary = Grey40,
     onPrimary = Color.White,
@@ -106,10 +95,7 @@ private val LightColorPalette = lightColorScheme(
     onPrimary = Color.White,
     onSecondary = Color.Black,
     onBackground = Color.Black,
-
      */
-    onSurface = Color.Black
-
 )
 
 @Composable
@@ -117,17 +103,12 @@ fun StrengthTrackerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
     val colors = when {
         darkTheme -> DarkColorPalette
         else -> LightColorPalette
     }
 
     MaterialTheme(
-        colors = colors,
         colorScheme = colors,
         typography = Typography,
         shapes = Shapes,

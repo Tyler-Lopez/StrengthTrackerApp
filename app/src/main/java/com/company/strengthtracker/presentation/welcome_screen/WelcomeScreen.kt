@@ -1,8 +1,7 @@
 package com.company.strengthtracker.presentation.welcome_screen
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -44,30 +43,6 @@ fun WelcomeScreen(
             if (currentUser == null) {
                 viewModel.logout(true)
             } else {
-                Column {
-                    Text(currentUser!!.email)
-                    Text(currentUser!!.uid)
-                    Text(currentUser!!.username)
-                    Button(
-                        onClick = { viewModel.logout() }
-                    ) {
-                        Text("Logout")
-                    }
-                    Button(
-                        onClick = { viewModel.getCurrentUserFromCollections() }
-                    ) {
-                        Text("Read")
-                    }
-                    Button(
-                        onClick = { viewModel.updateCurrentUserUsername("NewUsername") }
-                    ) {
-                        Text("Update")
-                    }
-                    Button(
-                        onClick = { viewModel.deleteCurrentUserFromCollections() }
-                    ) {
-                        Text("Delete")
-                    }
                 Button(onClick = {navController.navigate(Screen.DayScreen.route)}){
                     Text("Day View")
                 }
