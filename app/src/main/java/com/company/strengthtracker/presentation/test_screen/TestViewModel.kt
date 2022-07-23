@@ -5,6 +5,7 @@ import com.company.strengthtracker.data.repository.AuthRepositoryImpl
 import com.company.strengthtracker.data.repository.UsersRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
+import java.time.ZoneOffset
 import javax.inject.Inject
 
 //test viewModel for holding input data for different graphs Im working on
@@ -16,8 +17,7 @@ constructor(
     private val usersRepositoryImpl: UsersRepositoryImpl
 ) : ViewModel() {
     val listX: MutableList<Float> = mutableListOf()
-    val listY: MutableList<Float> =
-    val listYCurrent: MutableList<Float> =
+    val td = LocalDate.now().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
 
     val listXCurrent = listX
     val yMax: Float = listY.maxOrNull() ?: -1f

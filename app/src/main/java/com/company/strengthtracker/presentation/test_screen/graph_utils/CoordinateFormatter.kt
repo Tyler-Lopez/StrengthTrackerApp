@@ -2,7 +2,7 @@ package com.company.strengthtracker.presentation.test_screen.graph_utils
 
 import androidx.compose.ui.geometry.Offset
 
-class CoordinateFormatter() {
+class CoordinateFormatter {
     //formula for scaling coordinates points (x, y) to new values that will result in a graph that fills the canvas height and width evenly
     fun getCoordList(
         listX: List<Float>,
