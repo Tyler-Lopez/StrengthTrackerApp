@@ -28,14 +28,6 @@ import com.company.strengthtracker.ui.theme.DarkGrey10
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TestScreen(navController: NavController, viewModel: TestViewModel = hiltViewModel()) {
-    val xList = viewModel.listX
-    var listXCurrent = xList
-    var yListCurrent = viewModel.listYCurrent
-    val yList = viewModel.listY
-    val xMax = xList.maxOrNull() ?: 0f
-    val yMax = yList.maxOrNull() ?: 0f
-    val xMin = xList.minOrNull() ?: 0f
-    val yMin = yList.minOrNull() ?: 0f
     val colors = MaterialTheme.colorScheme
 /*
     val coordinateList: MutableList<Offset> =
@@ -73,15 +65,20 @@ fun TestScreen(navController: NavController, viewModel: TestViewModel = hiltView
                 padding = 50f
             )
 */
+            var yMax = Math.max(viewModel.listYInitial.maxOrNull() ?: Float.MIN_VALUE, viewModel.listYCurrent.maxOrNull() ?: Float.MIN_VALUE)
+            var yMin = Math.min(viewModel.listYInitial.minOrNull() ?: Float.MIN_VALUE, viewModel.listYCurrent.minOrNull() ?: Float.MIN_VALUE)
+            var xMax = Math.max(viewModel.xli.maxOrNull() ?: Float.MIN_VALUE, viewModel.xlc.maxOrNull() ?: Float.MIN_VALUE)
+            var xMin = Math.min(viewModel.xli.minOrNull() ?: Float.MIN_VALUE, viewModel.xlc.minOrNull() ?: Float.MIN_VALUE)
             ComparisonGraph(
-                xListInitial = xList,
-                xListCurrent = xList,
-                yListInitial = yList,
-                yListCurrent = yListCurrent,
-                totalYMax = Math.max(yList.maxOrNull() ?: Float.MIN_VALUE, yListCurrent.maxOrNull() ?: Float.MIN_VALUE),
+                xListInitial = viewModel.xli,
+                xListCurrent = viewModel.xlc,
+                yListInitial = viewModel.listYInitial,
+                yListCurrent = viewModel.listYCurrent,
+                totalYMax = yMax,
+                totalYMin = yMin,
                 //PLACEHOLDER
-                totalXMax = xList.maxOrNull() ?: Float.MIN_VALUE,
-                totalXMin = xList.minOrNull() ?: Float.MIN_VALUE,
+                totalXMax = xMax,
+                totalXMin = xMin,
                 //PLACEHOLDER
                 padding = 50f,
                 coordinateFormatter = CoordinateFormatter(),
@@ -90,120 +87,6 @@ fun TestScreen(navController: NavController, viewModel: TestViewModel = hiltView
         }
     }
 }
-
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun ComparisonGraph(
-//    xListInitial: List<Float>,
-//    xListCurrent: List<Float>,
-//    yListInitial: List<Float>,
-//    yListCurrent: List<Float>,
-//    totalYMax: Float,
-//    totalXMax: Float,
-//    totalXMin: Float,
-//    height: Float,
-//    width: Float,
-//    padding: Float,
-//    coordinateFormatter: CoordinateFormatter,
-//    colors: ColorScheme,
-//) {
-//
-//    // pixel density ref for Paint
-//    val density = LocalDensity.current
-//
-//    // textPaint to construct text objects within the graph
-//    val textPaint =
-//        remember(density) {
-//            Paint().apply {
-//                color = android.graphics.Color.WHITE
-//                textAlign = Paint.Align.RIGHT
-//                textSize = density.run { 12.sp.toPx() }
-//            }
-//        }
-//    // setting text anti alias to on
-//    textPaint.isAntiAlias = true
-//
-//    //box for maintaining 1:1 aspect ratio
-//    Box(
-//        contentAlignment = Alignment.Center, modifier = Modifier
-//            .aspectRatio(1f)
-//            .fillMaxSize(0.9f)
-//    ) {
-//        //Column for centering
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .background(colors.surfaceVariant),
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.Center
-//        ) {
-//            Canvas(
-//                modifier = Modifier.fillMaxSize(0.8f)
-//            ) {
-//                val width = size.width
-//                val height = size.height
-////TODO move the coordinate list formatting to an alternative class outside of composables
-//                val coordinateList: MutableList<Offset> =
-//                    coordinateFormatter.getComparisonCoordList(
-//                    )
-//                // x-axis
-//                drawLine(
-//                    start = Offset(padding - xMin, ((yMax) * (height / yMax)).toFloat()),
-//                    end = Offset(width, ((yMax - 0) * (height / yMax)).toFloat()),
-//                    color = Color.Black,
-//                    strokeWidth = 5f
-//                )
-//
-//                // y-axis
-//                drawLine(
-//                    start = Offset((padding - xMin), ((yMax - 0) * (height / yMax))),
-//                    end = Offset(padding - xMin, (height / yMax)),
-//                    color = colors.onSurface,
-//                    strokeWidth = 5f
-//                )
-//
-//                var stepSize = (height / yMax) //scaled measurement of '1' unit on graph
-//                var increment = stepSize
-//                var text = yMax
-//                for (i in 0..yMax.toInt()) {
-//                    if (i % 5 == 0 && text > 0f) {
-//                        drawContext.canvas.nativeCanvas.drawText(
-//                            "${text.toInt()}",
-//                            (0.5f * (padding - xMin)),
-//                            (stepSize + (0.3f * textPaint.textSize)),
-//                            textPaint
-//                        )
-//                        drawLine(
-//                            color = Color.Black,
-//                            start = Offset(x = (padding - xMin) - 8f, y = stepSize),
-//                            end = Offset(x = (padding - xMin) + 8f, y = stepSize),
-//                            strokeWidth = 5f
-//                        )
-//                    }
-//                    text -= 1f
-//                    stepSize += increment
-//                }
-//
-//
-//
-//                for (i in coordinateList.indices) {
-//                    if ((i + 1) < 16) {
-//                        drawLine(
-//                            color = colors.onSurface,
-//                            start = coordinateList[i],
-//                            end = coordinateList[i + 1],
-//                            strokeWidth = 5f
-//                        )
-//                    }
-//                }
-//                for (i in coordinateList.indices) {
-//                    drawCircle(color = colors.onSurfaceVariant, radius = 5f, center = coordinateList[i])
-//                }
-//            }
-//        }
-//    }
-//}
 
 /*x_0 = scaledXDist, x_1 += scaledXDist
  * y = (yMax - y)*(height/yMax)*/
@@ -216,6 +99,7 @@ fun ComparisonGraph(
     yListInitial: List<Float>,
     yListCurrent: List<Float>,
     totalYMax: Float,
+    totalYMin: Float,
     totalXMax: Float,
     totalXMin: Float,
     padding: Float,
@@ -259,52 +143,53 @@ fun ComparisonGraph(
                 val height = size.height
 //TODO move the coordinate list formatting to an alternative class outside of composables
                 //get coordinate list
+
                 var current = coordinateFormatter.getCoordList(
                     listX = xListCurrent,
                     listY = yListCurrent,
-                    yMax = yListCurrent.maxOrNull() ?: Float.MIN_VALUE,
+                    yMax = totalYMax,
+                   totalYMin,
                     xMax = xListCurrent.maxOrNull() ?: Float.MIN_VALUE,
-                    yMin = yListCurrent.minOrNull() ?: Float.MIN_VALUE,
                     xMin = xListCurrent.minOrNull() ?: Float.MIN_VALUE,
-                    height = height,
-                    width = width,
+                    height = height ,
+                    width = width ,
                     padding = padding
                 )
                 var initial = coordinateFormatter.getCoordList(
                     listX = xListInitial,
                     listY = yListInitial,
-                    yMax = yListInitial.maxOrNull() ?: Float.MIN_VALUE,
+                    yMax = totalYMax,
+                    totalYMin,
                     xMax = xListInitial.maxOrNull() ?: Float.MIN_VALUE,
-                    yMin = yListInitial.minOrNull() ?: Float.MIN_VALUE,
                     xMin = xListInitial.minOrNull() ?: Float.MIN_VALUE,
-                    height = height,
-                    width = width,
+                    height = height ,
+                    width = width ,
                     padding = padding
                 )
 
                 // x-axis
                 drawLine(
-                    start = Offset(padding - totalXMin, ((totalXMax) * (height / totalYMax)).toFloat()),
-                    end = Offset(width, ((totalYMax - 0) * (height / totalYMax)).toFloat()),
+                    start = Offset(padding - totalXMin, ((totalYMax) * (height / totalYMax))),
+                    end = Offset(width + padding, ((totalYMax - 0) * (height / totalYMax))),
                     color = Color.Black,
                     strokeWidth = 5f
                 )
 
                 // y-axis
                 drawLine(
-                    start = Offset((padding - totalXMin), ((totalYMax - 0) * (height / totalYMax))),
-                    end = Offset(padding - totalXMin, (height / totalYMax)),
+                    start = Offset((padding - totalXMin), ((totalYMax) * (height / (totalYMax)))) ,
+                    end = Offset(padding - totalXMin, (height / (totalYMax - totalYMin))),
                     color = colors.onSurface,
                     strokeWidth = 5f
                 )
 
-                var stepSize = (height / totalYMax) //scaled measurement of '1' unit on graph
+                var stepSize = (height / (totalYMax - totalYMin))//scaled measurement of '1' unit on graph
                 var increment = stepSize
-                var text = totalYMax
-                for (i in 0..totalYMax.toInt()) {
+                var text =  totalYMax
+                for (i in totalYMin.toInt()..(totalYMax.toInt() )) {
                     if (i % 5 == 0 && text > 0f) {
                         drawContext.canvas.nativeCanvas.drawText(
-                            "${text.toInt()}",
+                            "${text}",
                             (0.5f * (padding - totalXMin)),
                             (stepSize + (0.3f * textPaint.textSize)),
                             textPaint
@@ -323,30 +208,31 @@ fun ComparisonGraph(
 
 
                 for (i in current.indices) {
-                    if ((i + 1) < 16) {
+                    if ((i + 1) < current.size) {
                         drawLine(
                             color = colors.onSurface,
                             start = current[i],
                             end = current[i + 1],
-                            strokeWidth = 5f
+                            strokeWidth = 10f
                         )
                     }
                 }
                 for (i in current.indices) {
-                    drawCircle(color = colors.onSurfaceVariant, radius = 5f, center = current[i])
+                    drawCircle(color = colors.onSurfaceVariant, radius = 15f, center = current[i])
                 }
+
                 for (i in initial.indices) {
-                    if ((i + 1) < 16) {
+                    if ((i + 1) < current.size) {
                         drawLine(
-                            color = colors.onSurface,
+                            color = colors.error,
                             start = initial[i],
                             end = initial[i + 1],
-                            strokeWidth = 5f
+                            strokeWidth = 10f
                         )
                     }
                 }
                 for (i in initial.indices) {
-                    drawCircle(color = colors.onSurfaceVariant, radius = 5f, center = initial[i])
+                    drawCircle(color = colors.onSurfaceVariant, radius = 15f, center = initial[i])
                 }
             }
         }
@@ -448,8 +334,8 @@ fun SingleLineGraph(
                         listX = listX,
                         listY = listY,
                         yMax = yMax,
+                        0f,
                         xMax = xMax,
-                        yMin = yMin,
                         xMin = xMin,
                         height = height,
                         width = width,
@@ -525,7 +411,7 @@ val stroke = Paint()
                             color = colors.onSurface,
                             start = coordinateList[i],
                             end = coordinateList[i + 1],
-                            strokeWidth = 8f
+                            strokeWidth = 10f
                         )
                     }
                 }

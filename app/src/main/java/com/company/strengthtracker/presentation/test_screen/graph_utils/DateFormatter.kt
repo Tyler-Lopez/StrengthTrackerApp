@@ -5,14 +5,14 @@ import java.time.ZoneId
 
 public class DateFormatter {
 
-    fun dateFormatter(date: Long): Long {
+    fun dateFormatter(date: Long): Float{
         return Instant.ofEpochMilli(date)
             .atZone(ZoneId.systemDefault())
             .toLocalDate()
             .toString()
             .replace("-", "")
             .replaceRange(0, 1, "")
-            .toLong()
+            .toFloat()
     }
 
     fun dateBuilder(date: Long): String {
