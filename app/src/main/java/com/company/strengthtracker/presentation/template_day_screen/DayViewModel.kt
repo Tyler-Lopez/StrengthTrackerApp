@@ -79,18 +79,15 @@ class DayViewModel @Inject constructor(
         //dayScreenState.value = DayScreenState.LOADING
         dateIn.value = newValue
         dateMillis.value = dateIn.value.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
-        Log.d(TAG, "date value ----> " + _dateIn.value.toString())
         getSetDataForDate()
     }
 
     fun openSelection() {
         dayScreenState.value = DayScreenState.SELECT
-        Log.d(TAG, "SCREENSTATE IS ----> ${_dayScreenState.value}")
     }
 
     fun closeSelection() {
         if(exerciseBundleMain.size > 0) {
-            Log.d(TAG, "Bundle holds ---->" + exerciseBundleMain[0][0].name)
             dayScreenState.value = DayScreenState.LOADED
 
         }
@@ -98,7 +95,6 @@ class DayViewModel @Inject constructor(
             dayScreenState.value = DayScreenState.LAUNCH
             getSetDataForDate() //refresh UI after closing selection
         }
-        Log.d(TAG, "SCREENSTATE IS-----> ${_dayScreenState.value}")
     }
 
     init {
@@ -127,7 +123,6 @@ class DayViewModel @Inject constructor(
                     is Resource.Success -> {
 //                        exerciseBundleMain.clear()
                         exerciseBundleMain.addAll(updateLog.data)
-                        Log.d(TAG, "new bundle size ----> " + exerciseBundleMain.size.toString())
                         dayScreenState.value = DayScreenState.LOADED
                     }
                     is Resource.Error -> {
