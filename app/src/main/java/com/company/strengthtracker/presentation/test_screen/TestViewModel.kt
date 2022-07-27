@@ -28,13 +28,13 @@ constructor(
     * */
     val df = DateFormatter()
     val date1 = LocalDate.of(2022, 7, 22).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-    val date2 = LocalDate.of(2022, 7, 23).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-    val date3 = LocalDate.of(2022, 7, 24).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-    val date4 = LocalDate.of(2022, 7, 25).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-    val date5 = LocalDate.of(2022, 8, 1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-    val date6 = LocalDate.of(2022, 8, 3).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-    val date7 = LocalDate.of(2022, 8, 5).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-    val date8 = LocalDate.of(2022, 8, 7).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    val date2 = LocalDate.of(2022, 7, 24).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    val date3 = LocalDate.of(2022, 7, 26).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    val date4 = LocalDate.of(2022, 7, 27).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    val date5 = LocalDate.of(2022, 8, 3).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    val date6 = LocalDate.of(2022, 8, 4).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    val date7 = LocalDate.of(2022, 8, 7).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    val date8 = LocalDate.of(2022, 8, 10).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
 
     var listXInitial: MutableList<Float> = mutableListOf(
@@ -53,7 +53,7 @@ constructor(
         df.dateFormatter(date8)
     )
     val listYCurrent: MutableList<Float> = mutableListOf(
-        60f, 62.5f, 65f, 70f
+        60f, 62.5f, 65f, 65f
     )
     var xli = normalize(listXInitial, listXCurrent)
     var xlc = normalize(listXCurrent, listXInitial)
