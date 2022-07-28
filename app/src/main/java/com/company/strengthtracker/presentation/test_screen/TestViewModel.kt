@@ -3,12 +3,10 @@ package com.company.strengthtracker.presentation.test_screen
 import androidx.lifecycle.ViewModel
 import com.company.strengthtracker.data.repository.AuthRepositoryImpl
 import com.company.strengthtracker.data.repository.UsersRepositoryImpl
-import com.company.strengthtracker.domain.util.DeviceZoneId
 import com.company.strengthtracker.presentation.test_screen.graph_utils.DateFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.ZoneOffset
 import javax.inject.Inject
 
 //test viewModel for holding input data for different graphs Im working on
