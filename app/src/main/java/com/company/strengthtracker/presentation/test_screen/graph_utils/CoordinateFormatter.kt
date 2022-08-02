@@ -4,7 +4,7 @@ import androidx.compose.ui.geometry.Offset
 
 class CoordinateFormatter {
     //formula for scaling coordinates points (x, y) to new values that will result in a graph that fills the canvas height and width evenly
-    fun getCoordList(
+    fun normalizeCoordinates(
         listX: List<Float>,
         listY: List<Float>,
         yMax: Float,
@@ -16,6 +16,7 @@ class CoordinateFormatter {
         padding: Float //provides a right shift modifier that can be scaled and applied to an axis
     ): MutableList<Offset> {
         val coordinateList: MutableList<Offset> = mutableListOf()
+
 
 
         //if (listX.size == listY.size) {
@@ -31,7 +32,30 @@ class CoordinateFormatter {
         //      }
         return coordinateList
     }
+    fun normalizeCoordinates(
+        list:List<Offset>,
+        yMax: Float,
+        yMin:Float,
+        xMax:Float,
+        xMin:Float,
+        height: Float,
+        width: Float,
+        padding: Float
+    ):MutableList<Offset>{
+        val coordinates:MutableList<Offset> = mutableListOf()
+        list.forEach {
+            coordinates.add(
+                Offset(
+                    x = ((it.x) * (width / xMax)) +
+                            (padding - (xMin * (width / (xMax - xMin)))), //scaling and applying right shift to x to fit to graph axis'
+                    y = ((yMax - it.y) * (height / (yMax - yMin)))
+                )
+            )
+        }
+        return coordinates
+    }
 
+    //does some weird normalization that i havent actually used yet
     fun getComparisonCoordList(
         xListInitial: List<Float>,
         xListCurrent: List<Float>,
@@ -70,14 +94,5 @@ class CoordinateFormatter {
         comparedList.add(1, coordinatesInitial)
         return comparedList
     }
-    //returns min of non-null float list, values dont need to be normalized,
-//    fun min(list: List<Float>): Float {
-//        var min = Float.MAX_VALUE
-//        for (i in list.indices) {
-//            if (min > list[i]) min = list[i]
-//        }
-//        return min
-//    }
-
 }
 

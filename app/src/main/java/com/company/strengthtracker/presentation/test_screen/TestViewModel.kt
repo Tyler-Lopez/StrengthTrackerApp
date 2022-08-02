@@ -1,14 +1,19 @@
 package com.company.strengthtracker.presentation.test_screen
 
+import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.company.strengthtracker.data.repository.AuthRepositoryImpl
 import com.company.strengthtracker.data.repository.UsersRepositoryImpl
-import com.company.strengthtracker.domain.util.DeviceZoneId
+import com.company.strengthtracker.domain.util.DataSet
+import com.company.strengthtracker.domain.util.GraphData
+import com.company.strengthtracker.domain.util.GraphDataList
 import com.company.strengthtracker.presentation.test_screen.graph_utils.DateFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.ZoneOffset
 import javax.inject.Inject
 
 //test viewModel for holding input data for different graphs Im working on
@@ -26,6 +31,7 @@ constructor(
     * t_max: max of the range of target scaling
     * m:
     * */
+    //============TEST VALUES
     val df = DateFormatter()
     val date1 = LocalDate.of(2022, 7, 22).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
     val date2 = LocalDate.of(2022, 7, 24).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
@@ -35,28 +41,60 @@ constructor(
     val date6 = LocalDate.of(2022, 8, 4).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
     val date7 = LocalDate.of(2022, 8, 7).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
     val date8 = LocalDate.of(2022, 8, 10).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    val graphUtil = mutableStateOf(GraphDataList(mutableListOf()))
 
 
-    var listXInitial: MutableList<Float> = mutableListOf(
+    var x1: MutableList<Float> = mutableListOf(
         df.dateFormatter(date1),
         df.dateFormatter(date2),
         df.dateFormatter(date3),
         df.dateFormatter(date4),
     )
-    val listYInitial: MutableList<Float> = mutableListOf(
+    val y1: MutableList<Float> = mutableListOf(
         50f, 45f, 40f, 35f
     )
-    var listXCurrent: MutableList<Float> = mutableListOf(
+    var x2: MutableList<Float> = mutableListOf(
         df.dateFormatter(date5),
         df.dateFormatter(date6),
         df.dateFormatter(date7),
         df.dateFormatter(date8)
     )
-    val listYCurrent: MutableList<Float> = mutableListOf(
+    val y2: MutableList<Float> = mutableListOf(
         60f, 62.5f, 65f, 65f
     )
-    var xli = normalize(listXInitial, listXCurrent)
-    var xlc = normalize(listXCurrent, listXInitial)
+    var xli = normalize(x1, y1)
+    var xlc = normalize(x2, y2)
+    var a = DataSet(
+        coordinateArray = arrayOf(xli, y1)
+    )
+    var b = DataSet(
+        coordinateArray = arrayOf(xlc, y2)
+    )
+
+    var dataList = mutableStateOf(GraphDataList(mutableListOf()))
+
+
+    init {
+        a.init()
+        b.init()
+            dataList.value = GraphDataList(
+                coordinates = mutableListOf(
+                    a,
+                    b
+                )
+            )
+            dataList.value.getMaxes()
+        Log.d("TEST", "${dataList.value.coordinates[0].yMax}")
+        Log.d("TEST", "${dataList.value.coordinates[0].yMin}")
+        Log.d("TEST", "${dataList.value.coordinates[1].yMax}")
+        Log.d("TEST", "${dataList.value.coordinates[1].yMin}")
+        Log.d("TEST", "${dataList.value.totalYMax}")
+        Log.d("TEST", "${dataList.value.totalYMin}")
+        Log.d("TEST", "${dataList.value.totalXMax}")
+        Log.d("TEST", "${dataList.value.totalXMin}")
+    }
+
+//=========\\TEST VALUES
 
     /*normalizes xList to larger of two ranges --> this probably doesnt work but want to check*/
     fun normalize(xList: MutableList<Float>, xListb: MutableList<Float>): MutableList<Float> {
