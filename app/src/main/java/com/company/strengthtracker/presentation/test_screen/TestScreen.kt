@@ -1,12 +1,7 @@
 package com.company.strengthtracker.presentation.test_screen
 
-import android.content.ContentValues.TAG
-import android.content.res.Configuration
 import android.graphics.Paint
-import android.util.Log
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,362 +10,171 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.input.pointer.consumeAllChanges
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.company.strengthtracker.domain.util.GraphData
-import com.company.strengthtracker.presentation.test_screen.graph_utils.CoordinateFormatter
-import java.util.Collections.max
+import com.company.strengthtracker.presentation.test_screen.graph_utils.*
 
-@OptIn(ExperimentalMaterial3Api::class)
+@kotlin.OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TestScreen(navController: NavController, viewModel: TestViewModel = hiltViewModel()) {
     val colors = MaterialTheme.colorScheme
-    /*
-        val coordinateList: MutableList<Offset> =
-            CoordinateFormatter().getCoordList(
-                listX = listX,
-                listY = listY,
-                yMax = yMax,
-                xMax = xMax,
-                yMin = yMin,
-                xMin = xMin,
-                height = height,
-                width = width,
-                padding = padding
-            )
-    */
-    val orientation by remember {mutableStateOf(Configuration.ORIENTATION_PORTRAIT)}
-    val configuration = LocalConfiguration.current
-    var height by remember { mutableStateOf(0f) }
-    var width by remember { mutableStateOf(0f) }
-/*
-    LaunchedEffect(configuration){
-        snapshotFlow { configuration.orientation }
-    }
-*/
+    var graphUtil by remember { viewModel.dataList }
 
     Column(
         modifier =
         Modifier
             .fillMaxSize()
-            .background(colors.background)
-            .onGloballyPositioned { layoutCoordinates ->
-                width = layoutCoordinates.size.width.toFloat()
-                height = layoutCoordinates.size.height.toFloat()
-            },
+            .background(colors.background),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Card(
-            elevation = CardDefaults.cardElevation(3.dp),
-            shape = MaterialTheme.shapes.medium,
-            modifier = Modifier.fillMaxWidth(0.95f)
-        ) {
-
-            /*
-                        SingleLineGraph(
-                            listX = listX,
-                            listY = listY,
-                            yMax = yMax,
-                            xMax = xMax,
-                            yMin = yMin,
-                            xMin = xMin,
-                            coordinateFormatter = CoordinateFormatter(),
-                            colors = colors,
-                            padding = 50f
-                        )
-            */
-            var yMax =
-                Math.max(
-                    viewModel.listYInitial.maxOrNull() ?: Float.MIN_VALUE,
-                    viewModel.listYCurrent.maxOrNull() ?: Float.MIN_VALUE
-                )
-            var yMin =
-                Math.min(
-                    viewModel.listYInitial.minOrNull() ?: Float.MIN_VALUE,
-                    viewModel.listYCurrent.minOrNull() ?: Float.MIN_VALUE
-                )
-            var xMax =
-                Math.max(
-                    viewModel.xli.maxOrNull() ?: Float.MIN_VALUE,
-                    viewModel.xlc.maxOrNull() ?: Float.MIN_VALUE
-                )
-            var xMin =
-                Math.min(
-                    viewModel.xli.minOrNull() ?: Float.MIN_VALUE,
-                    viewModel.xlc.minOrNull() ?: Float.MIN_VALUE
-                )
-
-            var graphData: GraphData =
+        val graphData by remember {
+            mutableStateOf(
                 GraphData(
-                    height = height,
-                    width = width,
-                    xListInitial = viewModel.xli,
-                    xListCurrent = viewModel.xlc,
-                    yListInitial = viewModel.listYInitial,
-                    yListCurrent = viewModel.listYCurrent,
-                    totalYMaxInit = yMax,
-                    totalYMinInit = yMin,
+//                    height = 1026.0f,
+//                    width = 1026.0f,
+                    graphUtil,
                     // PLACEHOLDER
-                    totalXMax = xMax,
-                    totalXMin = xMin,
-                    // PLACEHOLDER
-                    padding = 50f,
+                    padding = 0f,
                     coordinateFormatter = CoordinateFormatter(),
                 )
-
-            ComparisonGraph(graphData = graphData, colors = colors)
+            )
         }
+        ChartHolder(graphData = graphData, colors = colors)
     }
 }
 
-/*x_0 = scaledXDist, x_1 += scaledXDist
- * y = (yMax - y)*(height/yMax)*/
-/**/
-@OptIn(ExperimentalMaterial3Api::class)
+@kotlin.OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ComparisonGraph(
+fun ChartHolder(
     graphData: GraphData,
     colors: ColorScheme,
 ) {
-    var totalYMax = graphData.totalYMaxInit + 20f
-    var totalYMin = graphData.totalYMinInit - 20f
-    // pixel density ref for Paint
-    val density = LocalDensity.current
+    var borderOffset by remember { mutableStateOf(Offset.Zero) }
+
     var scale by remember { mutableStateOf(1f) }
-    val scaleAccumulator by remember { mutableStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
-    var sCenter = remember {
-        mutableStateOf(Offset(graphData.width * 0.5f, (graphData.width * 0.5f)))
-    }
-    sCenter.value = Offset(graphData.width * 0.5f, graphData.width * 0.5f)
-    var w by remember { mutableStateOf(0f) }
-    var h by remember { mutableStateOf(0f) }
+
     // textPaint to construct text objects within the graph
+    val density = LocalDensity.current
     val textPaint =
         remember(density) {
             Paint().apply {
                 color = android.graphics.Color.WHITE
-                textAlign = Paint.Align.RIGHT
+                textAlign = Paint.Align.LEFT
                 textSize = density.run { 12.sp.toPx() }
             }
         }
-    // setting text anti alias to on
     textPaint.isAntiAlias = true
-    Box(
-        contentAlignment = Alignment.Center, modifier = Modifier
-            .aspectRatio(1f)
+    var pan by remember { mutableStateOf(Offset.Zero) }
+
+    Column(
+        modifier = Modifier
             .fillMaxSize(1f)
+            .onGloballyPositioned { layoutCoordinates ->
+                val rect: androidx.compose.ui.geometry.Rect = layoutCoordinates.boundsInRoot()
+            },
+        horizontalAlignment = Alignment.End,
+        verticalArrangement = Arrangement.Top
     ) {
-        Canvas(
-            modifier =
-            Modifier
-                .fillMaxSize(1f)
-                .clip(MaterialTheme.shapes.extraSmall)
-                .pointerInput(Unit) {
-                    detectTransformGestures(
-                        panZoomLock = false,
-                        onGesture = { centroid, pan, zoom, rotation ->
-                            val prevScale = scale
-                            val prevSCenter = sCenter
-                            val ts = (scale * zoom).coerceIn(0.9f, 4f)
-                            scale = ts
-
-                            var to = (offset + centroid / prevScale) - (centroid / scale + pan / prevScale)
-                            var testOffset = Offset(to.x + (0.5f * size.width), to.y + (0.5f * size.height))
-                            offset = to
-                            //sCenter.value = pan
-                            sCenter.value = (sCenter.value + centroid / 1f) - (centroid / 1f + pan / 1f )
-                            Log.d("Eqn => ", "(${sCenter.value} + ${centroid} / ${prevScale}) - (${centroid} / ${scale} + ${pan} / ${prevScale}")
-                            Log.d(TAG, "${centroid / scale + pan / prevScale}")
-
-                            //brUh
-/*
-                            if ((testOffset.x >= 0f && testOffset.x <= size.width) && (testOffset.y >= 0f && testOffset.y <= size.height) && scale > 1f) {
-                                offset = to
-                                //sCenter.value = pan
-                                sCenter.value = (sCenter.value + centroid / prevScale) - (centroid / scale + pan / prevScale)
-                                Log.d(TAG, "${centroid / scale + pan / prevScale}")
-                            } else if (scale <= 1f) {
-                                offset = Offset.Zero
-
-                            } else {
-                                offset = offset
-                            }
-*/
-
-
-
-                        }
-                    )
-                }
-                .graphicsLayer {
-          scaleX = scale
-                    scaleY = scale
-                    translationX = -offset.x * scale
-                    translationY = -offset.y * scale
-
-
-                    //                            sCenter.value = Offset(sCenter.value.x +
-                    // (translationX), sCenter.value.y + (translationY) )
-                    transformOrigin = TransformOrigin(0f, 0f)
-                }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.9f)
+                .background(colors.surface),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.End
         ) {
-            val width = size.width
-            val height = size.height
-            // get coordinate list
-            w = width
-            h = height
-            drawIntoCanvas {
-                drawCircle(color = colors.error, radius = 5f, center = sCenter.value)
 
-                var axisXMin = graphData.totalXMin
-                var axisYMin = totalYMin
-                var axisXMax = graphData.totalXMax
-                var axisYMax = totalYMax
-                drawLine(
-                    start = Offset(graphData.padding - axisXMin, ((axisYMax) * (height / axisYMax))),
-                    end = Offset(width, ((axisYMax - 0) * (height / axisYMax))),
-                    color = Color.Black,
-                    strokeWidth = 5f
+            Column(modifier = Modifier
+                .background(colors.surface)
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .weight(0.05f)) {
+                ChartYAxis(
+                    colors = colors,
+                    scale = scale,
+                    offset = offset,
+                    graphData = graphData,
                 )
 
-                drawLine(
-                    start = Offset((graphData.padding - axisXMax), 0f),
-                    end =
-                    Offset(
-                        graphData.padding - axisXMin,
-                        (axisYMax - axisYMin) * (height / (axisYMax - axisYMin))
-                    ),
-                    color = colors.onSurface,
-                    strokeWidth = 5f
-                )
+
+
             }
-            /*       var current = coordinateFormatter.getCoordList(
-                listX = xListCurrent,
-                listY = yListCurrent,
-                yMax = totalYMax,
-                totalYMin,
-                xMax = xListCurrent.maxOrNull() ?: Float.MIN_VALUE,
-                xMin = xListCurrent.minOrNull() ?: Float.MIN_VALUE,
-                height = height,
-                width = width,
-                padding = padding
-            )
-            var initial = coordinateFormatter.getCoordList(
-                listX = xListInitial,
-                listY = yListInitial,
-                yMax = totalYMax,
-                totalYMin,
-                xMax = xListInitial.maxOrNull() ?: Float.MIN_VALUE,
-                xMin = xListInitial.minOrNull() ?: Float.MIN_VALUE,
-                height = height,
-                width = width,
-                padding = padding
-            )*/
-            var current =
-                graphData.coordinateFormatter.getCoordList(
-                    listX = graphData.xListCurrent,
-                    listY = graphData.yListCurrent,
-                    yMax = totalYMax,
-                    yMin = totalYMin,
-                    xMax = graphData.xListCurrent.maxOrNull() ?: Float.MIN_VALUE,
-                    xMin = graphData.xListCurrent.minOrNull() ?: Float.MIN_VALUE,
-                    //                    xMax = totalXMax,
-                    //                    xMin = totalXMin,
-                    height = height,
-                    width = width,
-                    padding = graphData.padding
-                )
-            var initial =
-                graphData.coordinateFormatter.getCoordList(
-                    listX = graphData.xListInitial,
-                    listY = graphData.yListInitial,
-                    yMax = totalYMax,
-                    yMin = totalYMin,
-                    xMax = graphData.xListInitial.maxOrNull() ?: Float.MIN_VALUE,
-                    xMin = graphData.xListInitial.minOrNull() ?: Float.MIN_VALUE,
-                    //                    xMax = totalXMax,
-                    //                    xMin = totalXMin,
-                    height = height,
-                    width = width,
-                    padding = graphData.padding
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.9f)
+                    .background(colors.surface)
+                    .clip(RectangleShape)
+
+            ) {
+                LineChart(
+                    graphData = GraphData(
+                        graphDataList = graphData.graphDataList,
+                        padding = graphData.padding,
+                        coordinateFormatter = graphData.coordinateFormatter
+                    ), colors = colors, scale = scale, offset = offset,
+                    onScaleChanged = {
+                        scale = it
+                    },
+                    onOffsetChanged = {
+                        offset = it
+                    },
+                    gestureListener = { centroid, panAmount, zoom ->
+                        pan = panAmount
+                    },
+                    textPaint = textPaint
                 )
 
-            var stepSize = 0f
-            val increment = height / (totalYMax - totalYMin)
-            val x1 = width / (graphData.totalXMax)
-            var text = totalYMax
-            for (i in totalYMin.toInt()..(totalYMax.toInt())) {
-                if (i % 10 == 0 && text > totalYMin) {
-                    drawContext.canvas.nativeCanvas.drawText(
-                        "${text}",
-                        (0.5f * (graphData.padding - graphData.totalXMin)),
-                        (stepSize + (0.3f * textPaint.textSize)),
-                        textPaint
-                    )
-                    drawLine(
-                        color = colors.onSurface,
-                        start = Offset(x = (graphData.padding - graphData.totalXMin) - 8f, y = stepSize),
-                        end = Offset(x = (graphData.padding - graphData.totalXMin) + 8f, y = stepSize),
-                        strokeWidth = 5f
-                    )
-                    drawLine(
-                        color = colors.onSurface,
-                        start = Offset((graphData.padding - graphData.totalXMin) + 8f, stepSize),
-                        end = Offset(width + graphData.padding, stepSize),
-                        strokeWidth = 2f,
-                        alpha = 0.6f,
-                        pathEffect =
-                        PathEffect.dashPathEffect(
-                            floatArrayOf(x1, x1, x1, x1),
-                        )
-                    )
-                }
-                text -= 1f
-                stepSize += increment
+            }
+        }
+        Row(
+            modifier = Modifier
+                .weight(0.1f)
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.Top
+        ) {
+            Column(
+                modifier = Modifier
+                    .background(colors.surface)
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .weight(0.05f)
+            ) {
+
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.9f)
+                    .background(colors.surface)
+
+            ) {
+                ChartXAxis(
+                    colors = colors,
+                    scale = scale,
+                    pan = pan,
+                    offset = offset,
+                    graphData = graphData
+                )
             }
 
-            for (i in current.indices) {
-                if ((i + 1) < current.size) {
-                    drawLine(
-                        color = colors.onSurface,
-                        start = current[i],
-                        end = current[i + 1],
-                        strokeWidth = 10f
-                    )
-                }
-            }
-            for (i in current.indices) {
-                drawCircle(color = colors.onSurfaceVariant, radius = 10f, center = current[i])
-            }
 
-            for (i in initial.indices) {
-                if ((i + 1) < current.size) {
-                    drawLine(
-                        color = colors.error,
-                        start = initial[i],
-                        end = initial[i + 1],
-                        strokeWidth = 10f
-                    )
-                }
-            }
-            for (i in initial.indices) {
-                drawCircle(color = colors.onSurfaceVariant, radius = 10f, center = initial[i])
-            }
         }
     }
 }
+
+
+
+/*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -463,7 +267,7 @@ fun SingleLineGraph(
                 //                val xOffset = ((xMax * 0.5f) - (size.width * 0.5f))
 
                 val coordinateList: MutableList<Offset> =
-                    coordinateFormatter.getCoordList(
+                    coordinateFormatter.normalizeCoordinates(
                         listX = listX,
                         listY = listY,
                         yMax = yMax,
@@ -490,7 +294,8 @@ fun SingleLineGraph(
                     strokeWidth = 5f
                 )
 
-                /*
+                */
+/*
                                 drawIntoCanvas {
                 val stroke = Paint()
                                     stroke.textAlign = Paint.Align.CENTER
@@ -501,7 +306,8 @@ fun SingleLineGraph(
                                     stroke.color = DarkGrey10.toArgb()
                                     stroke.typeface = Typeface.create("Arial", Typeface.BOLD)
                                 }
-                */
+                *//*
+
                 var stepSize = (height / yMax) // scaled measurement of '1' unit on graph
                 var increment = stepSize
                 var text = yMax
@@ -554,3 +360,4 @@ fun SingleLineGraph(
         }
     }
 }
+*/

@@ -91,7 +91,7 @@ fun ComparisonGraph(
                 val height = size.height
 //TODO move the coordinate list formatting to an alternative class outside of composables
                 //get coordinate list
-               var current = coordinateFormatter.getCoordList(
+               var current = coordinateFormatter.normalizeCoordinates(
                    listX = xListCurrent,
                    listY = yListCurrent,
                    yMax = yListCurrent.maxOrNull() ?: Float.MIN_VALUE,
@@ -102,7 +102,7 @@ fun ComparisonGraph(
                    width = width,
                    padding = padding
                )
-                var initial = coordinateFormatter.getCoordList(
+                var initial = coordinateFormatter.normalizeCoordinates(
                     listX = xListInitial,
                     listY = yListInitial,
                     yMax = yListInitial.maxOrNull() ?: Float.MIN_VALUE,
@@ -240,7 +240,7 @@ fun SingleLineGraph(
 //                val xOffset = ((xMax * 0.5f) - (size.width * 0.5f))
 
                 val coordinateList: MutableList<Offset> =
-                    coordinateFormatter.getCoordList(
+                    coordinateFormatter.normalizeCoordinates(
                         listX = listX,
                         listY = listY,
                         yMax = yMax,
