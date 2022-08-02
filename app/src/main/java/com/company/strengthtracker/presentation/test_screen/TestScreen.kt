@@ -33,22 +33,9 @@ fun TestScreen(navController: NavController, viewModel: TestViewModel = hiltView
     var graphUtil by remember { viewModel.dataList }
     Scaffold(
         topBar = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(text = "Line Chart", fontSize = MaterialTheme.typography.titleLarge.fontSize, fontStyle = FontStyle.Normal , fontFamily = FontFamily.Monospace,fontWeight = MaterialTheme.typography.titleLarge.fontWeight,)
-                Row(modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End){
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(imageVector = Icons.Filled.Menu, contentDescription = "menubutton")
-                    }
-                }
 
 
-            }
+
         },
         containerColor = MaterialTheme.colorScheme.surface,
 
