@@ -14,12 +14,12 @@ class DataSet(
 
     fun init() {
         coordinateArray[0].forEach { x ->
-                xMax = if (x > xMax) x else xMax
-                xMin = if (x < xMin) x else xMin
+            xMax = maxOf(x, xMax)
+            xMin = minOf(x, xMin)
         }
         coordinateArray[1].forEach { y ->
-            yMax = if (y > yMax) y else yMax
-            yMin = if (y < yMin) y else yMin
+            yMax = maxOf(y, yMax)
+            yMin = minOf(y, yMin)
         }
     }
 }

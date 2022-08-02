@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.Log
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,7 +50,7 @@ fun ChartYAxis(graphData: GraphData, colors: ColorScheme, scale: Float, offset: 
     textPaint.value.isAntiAlias = true
     textPaint.value.isLinearText = true
     Canvas(modifier = Modifier
-        .fillMaxSize()
+        .fillMaxSize().background(color = colors.surface)
         .graphicsLayer {
             scaleY = scale
             scaleX = scale
@@ -62,11 +63,6 @@ fun ChartYAxis(graphData: GraphData, colors: ColorScheme, scale: Float, offset: 
         val maxX = size.width * (scale - 1f) / scale
 
         textPaint.value.textSize /= scale
-        drawCircle(
-            color = colors.secondary,
-            radius = 15f / scale,
-            center = offset,
-        )
         drawLine(
             color = colors.onSurfaceVariant,
             strokeWidth = (5.dp.toPx()) / scale,
@@ -83,7 +79,16 @@ fun ChartYAxis(graphData: GraphData, colors: ColorScheme, scale: Float, offset: 
         val increment = (size.height / (totalYMax - totalYMin))
         var step = size.height
         var text = 0f
-        for (i in 0..totalYMax.toInt()) {
+        drawContext.canvas.nativeCanvas.drawText(
+            "${text.toInt()}",
+            (( offset.x) + ((35.dp.toPx()) / scale)),
+            step - (increment / 10f) + (25.dp.toPx() / scale),
+            textPaint.value
+        )
+        text += 1f
+        step -= increment
+
+        for (i in 1..totalYMax.toInt()) {
             if(i % 10 == 0){
                 drawContext.canvas.nativeCanvas.drawText(
                     "${text.toInt()}",

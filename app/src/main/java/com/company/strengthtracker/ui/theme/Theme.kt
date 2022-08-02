@@ -73,7 +73,7 @@ private val LightColorPalette = lightColorScheme(
     background = GreyBlue95,
     onBackground = GreyBlue10,
 
-    surface = GreyTeal90,
+    surface = GreyBlue90,
     onSurface = GreyTeal30,
 
     inverseSurface = GreyBlue20,

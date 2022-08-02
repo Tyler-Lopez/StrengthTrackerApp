@@ -3,20 +3,27 @@ package com.company.strengthtracker.presentation.test_screen
 import android.graphics.Paint
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.company.strengthtracker.domain.util.GraphData
+import com.company.strengthtracker.presentation.template_day_screen.TopBar
 import com.company.strengthtracker.presentation.test_screen.graph_utils.*
 
 @kotlin.OptIn(ExperimentalMaterial3Api::class)
@@ -24,28 +31,51 @@ import com.company.strengthtracker.presentation.test_screen.graph_utils.*
 fun TestScreen(navController: NavController, viewModel: TestViewModel = hiltViewModel()) {
     val colors = MaterialTheme.colorScheme
     var graphUtil by remember { viewModel.dataList }
+    Scaffold(
+        topBar = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(text = "Line Chart", fontSize = MaterialTheme.typography.titleLarge.fontSize, fontStyle = FontStyle.Normal , fontFamily = FontFamily.Monospace,fontWeight = MaterialTheme.typography.titleLarge.fontWeight,)
+                Row(modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End){
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(imageVector = Icons.Filled.Menu, contentDescription = "menubutton")
+                    }
+                }
 
-    Column(
-        modifier =
-        Modifier
-            .fillMaxSize()
-            .background(colors.background),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        val graphData by remember {
-            mutableStateOf(
-                GraphData(
-//                    height = 1026.0f,
-//                    width = 1026.0f,
-                    graphUtil,
-                    // PLACEHOLDER
-                    padding = 0f,
-                    coordinateFormatter = CoordinateFormatter(),
+
+            }
+        },
+        containerColor = MaterialTheme.colorScheme.surface,
+
+
+        ) {
+        val bruh = it.calculateBottomPadding()
+        Column(
+            modifier =
+            Modifier
+                .fillMaxSize().padding(it)
+                .background(colors.surface),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            val graphData by remember {
+                mutableStateOf(
+                    GraphData(
+                        graphUtil,
+                        padding = 0f,
+                        coordinateFormatter = CoordinateFormatter(),
+                    )
                 )
-            )
+            }
+
+            ChartHolder(graphData = graphData, colors = colors)
         }
-        ChartHolder(graphData = graphData, colors = colors)
+
     }
 }
 
@@ -75,7 +105,7 @@ fun ChartHolder(
 
     Column(
         modifier = Modifier
-            .fillMaxSize(1f)
+            .fillMaxSize(1f).clipToBounds()
             .onGloballyPositioned { layoutCoordinates ->
                 val rect: androidx.compose.ui.geometry.Rect = layoutCoordinates.boundsInRoot()
             },
@@ -91,18 +121,19 @@ fun ChartHolder(
             horizontalArrangement = Arrangement.End
         ) {
 
-            Column(modifier = Modifier
-                .background(colors.surface)
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .weight(0.05f)) {
+            Column(
+                modifier = Modifier
+                    .background(colors.surface)
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .weight(0.05f)
+            ) {
                 ChartYAxis(
                     colors = colors,
                     scale = scale,
                     offset = offset,
                     graphData = graphData,
                 )
-
 
 
             }
@@ -171,7 +202,6 @@ fun ChartHolder(
         }
     }
 }
-
 
 
 /*

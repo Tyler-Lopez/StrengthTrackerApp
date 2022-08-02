@@ -3,6 +3,7 @@ package com.company.strengthtracker.presentation.test_screen.graph_utils
 import android.graphics.Color
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
@@ -37,7 +38,7 @@ fun ChartXAxis(graphData: GraphData, colors: ColorScheme, scale: Float, pan: Off
     textPaint.value.isAntiAlias = true
     textPaint.value.isLinearText = true
     Canvas(modifier = Modifier
-        .fillMaxSize()
+        .fillMaxSize().clipToBounds().background(color = colors.surface)
         .graphicsLayer {
             scaleX = scale
             scaleY = scale
@@ -53,7 +54,7 @@ fun ChartXAxis(graphData: GraphData, colors: ColorScheme, scale: Float, pan: Off
             color = colors.secondary,
             strokeWidth = (3.dp.toPx()) / scale,
             start = Offset(
-                -1000f,
+                offset.x - 10f,
                 offset.y
             ),
             end = Offset(
@@ -74,7 +75,7 @@ fun ChartXAxis(graphData: GraphData, colors: ColorScheme, scale: Float, pan: Off
                 )
                 drawLine(
                     start = Offset(step, offset.y + (6.dp.toPx() / scale)),
-                    end = Offset(step, offset.y - (6.dp.toPx() / scale)),
+                    end = Offset(step, offset.y ),
                     color = androidx.compose.ui.graphics.Color.Black,
                     strokeWidth = 5f ,
                     alpha = 0.3f
