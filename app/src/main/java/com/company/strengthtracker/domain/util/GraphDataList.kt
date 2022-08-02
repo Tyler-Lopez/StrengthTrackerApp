@@ -20,15 +20,14 @@ class GraphDataList(
         }
     }
 
-    //Is this faster who knows?????
     fun getMax(x: MutableList<Float>, y: MutableList<Float>) {
         x.forEach { xVal ->
-            totalXMax.value = if (xVal > totalXMax.value) xVal else totalXMax.value
-            totalXMin.value = if (xVal < totalXMin.value) xVal else totalXMin.value
+            totalXMax.value = maxOf(xVal, totalXMax.value)
+            totalXMin.value = minOf(xVal, totalXMin.value)
         }
         y.forEach { yVal ->
-            totalYMax.value = if (yVal > totalYMax.value) yVal else totalYMax.value
-            totalYMin.value = if (yVal < totalYMin.value) yVal else totalYMin.value
+            totalYMax.value = maxOf(yVal, totalYMax.value)
+            totalYMin.value = minOf(yVal, totalYMin.value)
 
         }
 

@@ -2,6 +2,7 @@ package com.company.strengthtracker.presentation.test_screen.graph_utils
 
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ColorScheme
@@ -31,10 +32,10 @@ fun LineChart(
     val totalXMin = graphData.graphDataList.totalYMin.value
     var offset by remember { mutableStateOf(offset) }
     var scale by remember { mutableStateOf(scale) }
-    var borderOffset by remember { mutableStateOf(Offset.Zero) }
     Canvas(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = colors.surface)
             .pointerInput(Unit) {
                 detectTransformGestures(
                     panZoomLock = false,
@@ -45,13 +46,10 @@ fun LineChart(
                         val maxX = size.width * (newScale - 1f) / newScale
                         val maxY = size.height * (newScale - 1f) / newScale
                         offset = Offset(newOffset.x.coerceIn(0f, maxX), newOffset.y.coerceIn(0f, maxY))
-//                        offset = newOffset
                         scale = newScale
-                        borderOffset = Offset(maxX, maxY)
                         onScaleChanged(scale)
                         onOffsetChanged(offset)
                         gestureListener(centroid, pan, zoom)
-
                     }
                 )
             }
@@ -77,20 +75,20 @@ fun LineChart(
             stepY -= incrementY
 
         }
-        val increment = ((size.width / totalXMax) / 10f)
-        var step = 0f
-        var text: Float = 0f
-        for (i in 0..size.width.toInt()) {
-            drawLine(
-                start = Offset(step, 0f),
-                end = Offset(step, size.height),
-                color = Color.Black,
-                strokeWidth = 2f ,
-                alpha = 0.3f
-            )
-            step += increment
-
-        }
+//        val increment = ((size.width / totalXMax) / 10f)
+//        var step = 0f
+//        var text: Float = 0f
+//        for (i in 0..size.width.toInt()) {
+//            drawLine(
+//                start = Offset(step, 0f),
+//                end = Offset(step, size.height),
+//                color = Color.Black,
+//                strokeWidth = 2f ,
+//                alpha = 0.3f
+//            )
+//            step += increment
+//
+//        }
 
         // get coordinate list
 /*DRAW INTO CANVAS BLOCK COMMENTED OUT
