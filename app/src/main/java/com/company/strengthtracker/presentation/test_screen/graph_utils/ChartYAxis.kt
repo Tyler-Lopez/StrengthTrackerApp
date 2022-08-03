@@ -78,10 +78,10 @@ fun ChartYAxis(graphData: GraphData, colors: ColorScheme, scale: Float, offset: 
 
         val increment = (size.height / (totalYMax - totalYMin))
         var step = size.height
-        var text = 0f
+        var text = totalYMin
         drawContext.canvas.nativeCanvas.drawText(
             "${text.toInt()}",
-            (( offset.x) + ((35.dp.toPx()) / scale)),
+             offset.x + (35.dp.toPx() / scale),
             step - (increment / 10f) + (25.dp.toPx() / scale),
             textPaint.value
         )
@@ -92,7 +92,7 @@ fun ChartYAxis(graphData: GraphData, colors: ColorScheme, scale: Float, offset: 
             if(i % 10 == 0){
                 drawContext.canvas.nativeCanvas.drawText(
                     "${text.toInt()}",
-                    (( offset.x) + ((35.dp.toPx()) / scale)),
+                     offset.x + (35.dp.toPx() / scale),
                     step - (increment / 10f) + (5.dp.toPx() / scale),
                     textPaint.value
                 )

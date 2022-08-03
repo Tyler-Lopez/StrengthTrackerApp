@@ -11,6 +11,9 @@ class DataSet(
     var xMin = Float.MAX_VALUE
     var yMax = Float.MIN_VALUE
     var yMin = Float.MAX_VALUE
+    fun getX(): MutableList<Float>{
+        return coordinateArray[0]
+    }
 
     fun init() {
         coordinateArray[0].forEach { x ->

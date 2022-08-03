@@ -37,38 +37,41 @@ constructor(
     val date2 = LocalDate.of(2022, 7, 24).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
     val date3 = LocalDate.of(2022, 7, 26).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
     val date4 = LocalDate.of(2022, 7, 27).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-    val date5 = LocalDate.of(2022, 8, 3).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    val date5 = LocalDate.of(2022, 7, 29).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
     val date6 = LocalDate.of(2022, 8, 4).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
     val date7 = LocalDate.of(2022, 8, 7).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
     val date8 = LocalDate.of(2022, 8, 10).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    val date9 = LocalDate.of(2022, 8, 13).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    val date10 = LocalDate.of(2022, 8, 15).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
     val graphUtil = mutableStateOf(GraphDataList(mutableListOf()))
-
 
     var x1: MutableList<Float> = mutableListOf(
         df.dateFormatter(date1),
         df.dateFormatter(date2),
         df.dateFormatter(date3),
         df.dateFormatter(date4),
+        df.dateFormatter(date5)
     )
     val y1: MutableList<Float> = mutableListOf(
-        50f, 45f, 40f, 35f
+        50f, 45f, 40f, 35f, 40f
     )
     var x2: MutableList<Float> = mutableListOf(
-        df.dateFormatter(date5),
         df.dateFormatter(date6),
         df.dateFormatter(date7),
-        df.dateFormatter(date8)
+        df.dateFormatter(date8),
+        df.dateFormatter(date9),
+        df.dateFormatter(date10)
     )
     val y2: MutableList<Float> = mutableListOf(
-        60f, 62.5f, 65f, 65f
+        60f, 62.5f, 65f, 65f, 63f
     )
     var xli = normalize(x1, y1)
     var xlc = normalize(x2, y2)
     var a = DataSet(
-        coordinateArray = arrayOf(xli, y1)
+        coordinateArray = arrayOf(x1, y1)
     )
     var b = DataSet(
-        coordinateArray = arrayOf(xlc, y2)
+        coordinateArray = arrayOf(x2, y2)
     )
 
     var dataList = mutableStateOf(GraphDataList(mutableListOf()))
@@ -84,14 +87,7 @@ constructor(
                 )
             )
             dataList.value.getMaxes()
-        Log.d("TEST", "${dataList.value.coordinates[0].yMax}")
-        Log.d("TEST", "${dataList.value.coordinates[0].yMin}")
-        Log.d("TEST", "${dataList.value.coordinates[1].yMax}")
-        Log.d("TEST", "${dataList.value.coordinates[1].yMin}")
-        Log.d("TEST", "${dataList.value.totalYMax}")
-        Log.d("TEST", "${dataList.value.totalYMin}")
-        Log.d("TEST", "${dataList.value.totalXMax}")
-        Log.d("TEST", "${dataList.value.totalXMin}")
+        Log.d("date", "${x1.get(0)}")
     }
 
 //=========\\TEST VALUES

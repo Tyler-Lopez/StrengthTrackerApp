@@ -147,7 +147,9 @@ fun ChartHolder(
                     gestureListener = { centroid, panAmount, zoom ->
                         pan = panAmount
                     },
-                    textPaint = textPaint
+                    textPaint = textPaint,
+                    lineSize = 10f
+
                 )
 
             }
