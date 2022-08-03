@@ -1,5 +1,6 @@
 package com.company.strengthtracker.presentation.test_screen.graph_utils
 
+import android.util.Log
 import androidx.compose.ui.geometry.Offset
 
 class CoordinateFormatter {
@@ -23,8 +24,7 @@ class CoordinateFormatter {
         listY.forEachIndexed { i, it ->
             coordinateList.add(
                 Offset(
-                    x = ((listX[i]) * (width / xMax)) +
-                            (padding - (xMin * (width / (xMax - xMin)))), //scaling and applying right shift to x to fit to graph axis'
+                    x = 0f + (((listX[i] - xMin) * (width - 0f)) / (xMax - xMin)),
                     y = ((yMax - it) * (height / (yMax - yMin)))
                 )
             )

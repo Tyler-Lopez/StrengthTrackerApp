@@ -2,6 +2,7 @@ package com.company.strengthtracker.presentation.test_screen.graph_utils
 
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +28,8 @@ fun ChartXAxis(graphData: GraphData, colors: ColorScheme, scale: Float, pan: Off
     val totalXMax = graphData.graphDataList.totalXMax.value
     val totalXMin = graphData.graphDataList.totalXMax.value
     val thisOffset = Offset(offset.x, (offset.y + (35f / scale)))
+    val xMax = remember { mutableStateOf(graphData.graphDataList.totalXMax.value)}
+    val xMin = remember { mutableStateOf(graphData.graphDataList.totalXMin.value)}
 
     val textPaint = remember { mutableStateOf(Paint())}
      textPaint.value =
@@ -62,11 +65,35 @@ fun ChartXAxis(graphData: GraphData, colors: ColorScheme, scale: Float, pan: Off
                 offset.y
             )
         )
-        val increment = (size.width) / 10f
-        var step = 0f
-        var text = 0f
-        for (i in 0..size.width.toInt()) {
-            if(text.toInt() > 0f) {
+        val increment = (size.width) / (xMax.value - xMin.value).toInt()
+        Log.d("XMAX ==> ", "${xMax}")
+        Log.d("XMIN ==> ", "${xMin}")
+        var step = offset.x
+        var text = xMin.value
+        var r = 0
+        while(r < size.width){
+            if(text.toInt() > 0f  && text.toInt() % 5 == 0) {
+                drawContext.canvas.nativeCanvas.drawText(
+                    "${text.toInt()}",
+                    step - (3.dp.toPx() / scale),
+                    thisOffset.y + (10.dp.toPx() / scale),
+                    textPaint.value
+                )
+                drawLine(
+                    start = Offset(step, offset.y + (6.dp.toPx() / scale)),
+                    end = Offset(step, offset.y ),
+                    color = androidx.compose.ui.graphics.Color.Black,
+                    strokeWidth = 7f,
+                    alpha = 1f
+                )
+            }
+
+            r += increment.toInt()
+            text += 1f
+            step +=  increment
+        }
+        for (i in 0..(size.width / increment).toInt()) {
+            if(text.toInt() > 0f && text.toInt() % 2 == 0) {
                 drawContext.canvas.nativeCanvas.drawText(
                     "${text.toInt()}",
                     step - (3.dp.toPx() / scale),
@@ -82,8 +109,7 @@ fun ChartXAxis(graphData: GraphData, colors: ColorScheme, scale: Float, pan: Off
                 )
             }
             text += 1f
-            step += increment
-
+            step +=  increment
         }
     }
 

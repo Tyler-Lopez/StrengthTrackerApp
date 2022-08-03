@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -22,6 +23,7 @@ fun LineChart(
     scale: Float,
     offset: Offset,
     textPaint: Paint,
+    lineSize:Float,
     onScaleChanged: (Float) -> Unit,
     onOffsetChanged: (Offset) -> Unit,
     gestureListener: (centroid: Offset, pan: Offset, zoom: Float) -> Unit
@@ -69,53 +71,12 @@ fun LineChart(
                 start = Offset(size.width, stepY),
                 end = Offset(0f, stepY),
                 color = Color.Black,
-                strokeWidth = 2f,
+                strokeWidth = 7f / scale,
                 alpha = 0.3f
             )
             stepY -= incrementY
 
         }
-//        val increment = ((size.width / totalXMax) / 10f)
-//        var step = 0f
-//        var text: Float = 0f
-//        for (i in 0..size.width.toInt()) {
-//            drawLine(
-//                start = Offset(step, 0f),
-//                end = Offset(step, size.height),
-//                color = Color.Black,
-//                strokeWidth = 2f ,
-//                alpha = 0.3f
-//            )
-//            step += increment
-//
-//        }
-
-        // get coordinate list
-/*DRAW INTO CANVAS BLOCK COMMENTED OUT
-            drawIntoCanvas {
-                var axisXMin = totalXMin
-                var axisYMin = totalYMin
-                var axisXMax = totalXMax
-                var axisYMax = totalYMax
-                drawLine(
-                    start = Offset(0f, (axisYMax) * (height / axisYMax)),
-                    end = Offset(width, ((axisYMax - 0) * (height / axisYMax))),
-                    color = Color.Black,
-                    strokeWidth = 5f
-                )
-
-                drawLine(
-                    start = Offset(x = 0f, y = 0f),
-                    end =
-                    Offset(
-                        x = 0f,
-                        y = (axisYMax - axisYMin) * (height / (axisYMax - axisYMin))
-                    ),
-                    color = colors.onSurface,
-                    strokeWidth = 5f
-                )
-            }
-*/
 /* BOUND LINES FOR VISUAL TESTING
             drawCircle(
                 color = colors.tertiary,
@@ -163,19 +124,32 @@ fun LineChart(
                 padding = graphData.padding
             )
 
-            for (i in temp.indices) {
-                if ((i + 1) < temp.size) {
-                    drawLine(
-                        color = colors.onSurface,
-                        start = temp[i],
-                        end = temp[i + 1],
-                        strokeWidth = 10f
-                    )
+            var i = 0
+            try {
+                while (i < temp.size) {
+                        drawLine(
+                            color = colors.onSurface,
+                            start = temp[i],
+                            end = temp[i + 1],
+                            strokeWidth = 10f
+                        )
+                    if(scale > 1.3f )
+                        drawLine(
+                            color = colors.onSurface,
+                            start = temp[i],
+                            end = temp[i + 1],
+                            strokeWidth = 10f/ scale
+                        )
+
+                    drawCircle(color = colors.tertiaryContainer, radius = 10f / scale , center = temp[i])
+                    i += 1
                 }
+
+            } catch (e:IndexOutOfBoundsException){
+
             }
-            for (i in temp.indices) {
-                drawCircle(color = colors.onSurfaceVariant, radius = 5f , center = temp[i])
-            }
+
+
 
         }
 /*
