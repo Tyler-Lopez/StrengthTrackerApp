@@ -9,10 +9,10 @@ import kotlinx.coroutines.runBlocking
 class GraphDataList(
     var coordinates: MutableList<DataSet>
 ) {
-    var totalYMax = mutableStateOf(Float.MIN_VALUE)
-    var totalXMax = mutableStateOf(Float.MIN_VALUE)
-    var totalYMin = mutableStateOf(Float.MAX_VALUE)
-    var totalXMin = mutableStateOf(Float.MAX_VALUE)
+    val totalYMax = mutableStateOf(Float.MIN_VALUE)
+    val totalXMax = mutableStateOf(Float.MIN_VALUE)
+    val totalYMin = mutableStateOf(Float.MAX_VALUE)
+    val totalXMin = mutableStateOf(Float.MAX_VALUE)
 
     fun getMaxes() {
         coordinates.forEach { dataSet ->

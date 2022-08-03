@@ -148,8 +148,6 @@ fun ChartHolder(
                         pan = panAmount
                     },
                     textPaint = textPaint,
-                    lineSize = 10f
-
                 )
 
             }

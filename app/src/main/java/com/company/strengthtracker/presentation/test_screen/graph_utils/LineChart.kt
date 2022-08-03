@@ -23,7 +23,6 @@ fun LineChart(
     scale: Float,
     offset: Offset,
     textPaint: Paint,
-    lineSize:Float,
     onScaleChanged: (Float) -> Unit,
     onOffsetChanged: (Offset) -> Unit,
     gestureListener: (centroid: Offset, pan: Offset, zoom: Float) -> Unit
@@ -125,30 +124,24 @@ fun LineChart(
             )
 
             var i = 0
-            try {
-                while (i < temp.size) {
-                        drawLine(
-                            color = colors.onSurface,
-                            start = temp[i],
-                            end = temp[i + 1],
-                            strokeWidth = 10f
-                        )
-                    if(scale > 1.3f )
-                        drawLine(
-                            color = colors.onSurface,
-                            start = temp[i],
-                            end = temp[i + 1],
-                            strokeWidth = 10f/ scale
-                        )
+            while (i < temp.size - 1) {
+                drawLine(
+                    color = colors.onSurface,
+                    start = temp[i],
+                    end = temp[i + 1],
+                    strokeWidth = 10f
+                )
+                if (scale > 1.3f)
+                    drawLine(
+                        color = colors.onSurface,
+                        start = temp[i],
+                        end = temp[i + 1],
+                        strokeWidth = 10f / scale
+                    )
 
-                    drawCircle(color = colors.tertiaryContainer, radius = 10f / scale , center = temp[i])
-                    i += 1
-                }
-
-            } catch (e:IndexOutOfBoundsException){
-
+                drawCircle(color = colors.tertiaryContainer, radius = 10f / scale, center = temp[i])
+                i += 1
             }
-
 
 
         }
@@ -241,5 +234,6 @@ fun LineChart(
             }
 */
     }
+
 
 }
