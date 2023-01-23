@@ -14,7 +14,8 @@ Strength Tracker is an application that allows for granular tracking of strength
 
 ## Planned Features
 * Fully implement graph functionality to allow for selecting a metric, selecting a time frame, and selecting if the user would like to compare previous progress to current, or simply view current progress. 
-* 
+* This feature will be implemented using the Canvas graphing library I am currently developing. 
+
 ## UI Examples   
 ## Line chart 
 * Scales to data set and screen size
