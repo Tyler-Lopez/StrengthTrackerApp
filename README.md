@@ -17,9 +17,9 @@ Strength Tracker is an application that allows for granular tracking of strength
 * This feature will be implemented using the Canvas graphing library I am currently developing. 
 
 ## UI Examples   
-## Line chart 
+## Prototype Implementation of Line chart 
 * Scales to data set and screen size
-* Allows for zoom and drag gestures![Screenshot_20220802_085725]()
+* Allows for zoom and drag gestures
 * Zoom and gesture is bounded, and keeps x and y axis visible
 
 
